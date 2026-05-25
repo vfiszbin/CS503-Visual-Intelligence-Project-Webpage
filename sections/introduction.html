@@ -7,8 +7,41 @@
         <h2 class="title is-3" id="intro">I. Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            The introduction part of the report can be provided here
+            Image geolocation is important for various tasks such as emergency responses, navigation, and urban
+            analysis <a href="#ref1">[1]</a>. However, in reality, geolocation metadata is frequently missing for
+            reasons like security. This data gap can be filled by image geolocalization, a method of determining the
+            location given an image <a href="#ref2">[2]</a>. In this task, street-view images are particularly valuable
+            by offering rich clues from a ground-level human-centered perspective.
           </p>
+
+          <p>
+            Previously, image geolocalization often relied on matching a query image against geo-tagged databases or
+            assigning it to predefined spatial partitions, facing hurdles like sparse reference coverage and coarse
+            geo-partitions. Furthermore, these methods are deterministic and often rely on a single modality of
+            information. Recent research has shifted toward generative multimodal learning, which can model spatial
+            ambiguity and integrate auxiliary signals as well. This motivates a systematic study of how different data
+            modalities and modeling choices can be combined to make image geolocalization more accurate and robust.
+          </p>
+
+          <h3 class="title is-4">Our Contributions:</h3>
+          <ol>
+            <li>
+              <strong>Modality Ablation:</strong> How do different modalities contribute to image geolocalization?
+              Specifically, we evaluate whether textual descriptions and potentially aerial imagery improve performance
+              beyond street-view imagery alone, and which signals are most informative.
+            </li>
+            <li>
+              <strong>Methods Comparison:</strong> How do deterministic, generative, and hybrid approaches perform in
+              image geolocalization? In particular, we compare flow matching-based generative models with classification
+              and hybrid baselines to understand their strengths and limitations.
+            </li>
+            <li>
+              <strong>Generative Pipeline Design:</strong> How do design choices in a generative geolocalization pipeline
+              affect performance? In particular, how do different conditioning strategies and sampling settings influence
+              the quality and sharpness of predicted spatial distributions, and how can these predictions be effectively
+              visualized?
+            </li>
+          </ol>
         </div>
       </div>
     </div>
