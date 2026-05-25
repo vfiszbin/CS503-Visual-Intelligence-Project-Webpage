@@ -262,10 +262,19 @@
       <!-- Related Works. -->
       <div class="columns is-centered">
         <div class="column is-full-width">
-          <h2 class="title is-3" id="related-work">II. Related Works</h2>
+          <h2 class="title is-3" id="related-work">II. Related Work</h2>
           <div class="content has-text-justified">
             <p>
-              The related works part of the report can be provided here
+              Retrieval-based methods match images against large geo-tagged databases using cross-view or correlation-aware representations <a href="#ref1">[1]</a>, <a href="#ref2">[2]</a>, while classification approaches discretize the Earth into regions and predict a class label <a href="#ref3">[3]</a>. Hybrid models combine both <a href="#ref4">[4]</a>. Despite strong performance, these methods produce deterministic predictions and fail to capture ambiguity, as visually similar scenes can correspond to distant geographic locations.
+            </p>
+            <p>
+              Semantic signals have been introduced to improve generalization. Models such as StreetCLIP and PIGEON leverage synthetic captions or metadata <a href="#ref4">[4]</a>, <a href="#ref5">[5]</a>, but remain discriminative and output point estimates.
+            </p>
+            <p>
+              Generative approaches model geolocation as a spatial distribution. Dufour et al. <a href="#ref6">[6]</a> use diffusion and flow matching, while LocDiff <a href="#ref7">[7]</a> applies latent diffusion. These methods capture spatial ambiguity but are designed for global-scale localization on spherical manifolds and rely solely on visual conditioning.
+            </p>
+            <p>
+              In this work, we revisit generative geolocalization in a local setting focused on Switzerland. Instead of modeling trajectories on the Earth sphere \(S^2\), we study a simpler Euclidean formulation in \(\mathbb{R}^2\), adapted to the limited geographic region considered. We additionally explore other conditioning signals, including image captions and canton-level classifier priors, to evaluate whether coarse semantic information can improve probabilistic localization.
             </p>
           </div>
         </div>
@@ -523,6 +532,67 @@ Format the equations using LaTeX and add them to the website like this:
       <!--/ Visual Items. -->
     </div>
   </section>
+
+<!------------------------------------------------------------------------->
+
+<!----------------------------- REFERENCES -------------------------------->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="references">References</h2>
+
+        <div class="content">
+          <ol>
+
+            <li id="ref1">
+              S. Hu, M. Feng, R. M. H. Nguyen, and G. H. Lee.
+              <em>CVM-Net: Cross-View Matching Network for Image-Based Ground-to-Aerial Geo-Localization.</em>
+              CVPR, 2018.
+            </li>
+
+            <li id="ref2">
+              F. Lu, X. Lan, L. Zhang, D. Jiang, Y. Wang, and C. Yuan.
+              <em>CricaVPR: Cross-image Correlation-aware Representation Learning for Visual Place Recognition.</em>
+              arXiv preprint arXiv:2402.19231, 2024.
+            </li>
+
+            <li id="ref3">
+              B. Clark, A. Kerrigan, P. P. Kulkarni, V. V. Cepeda, and M. Shah.
+              <em>Where We Are and What We're Looking At: Query Based Worldwide Image Geo-localization Using Hierarchies and Scenes.</em>
+              CVPR, 2023.
+            </li>
+
+            <li id="ref4">
+              L. Haas, M. Skreta, S. Alberti, and C. Finn.
+              <em>PIGEON: Predicting Image Geolocations.</em>
+              CVPR, 2024.
+            </li>
+
+            <li id="ref5">
+              L. Haas, S. Alberti, and M. Skreta.
+              <em>Learning Generalized Zero-Shot Learners for Open-Domain Image Geolocalization.</em>
+              arXiv preprint arXiv:2302.00275, 2023.
+            </li>
+
+            <li id="ref6">
+              N. Dufour, V. Kalogeiton, D. Picard, and L. Landrieu.
+              <em>Around the World in 80 Timesteps: A Generative Approach to Global Visual Geolocation.</em>
+              CVPR, 2025.
+            </li>
+
+            <li id="ref7">
+              Z. Wang, Z. Liu, J. Zhang, Z. Zhou, Q. Cao, N. Wu, L. Mu, Y. Song, Y. Xie, N. Lao, and G. Mai.
+              <em>LocDiff: Identifying Locations on Earth by Diffusing in the Hilbert Space.</em>
+              arXiv preprint arXiv:2503.18142, 2025.
+            </li>
+
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!------------------------------------------------------------------------->
 
