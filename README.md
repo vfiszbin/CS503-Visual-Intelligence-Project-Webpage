@@ -23,6 +23,14 @@ After cloning the repository, make changes in the file `index.html` to modify yo
 
 The `static` folder can be used for storing images, gifs, videos and other content that can be used in the report for reporting. 
 
+The page sections live in the `sections` folder and are loaded into `index.html` at runtime. When previewing locally, serve the repository with a local web server instead of opening `index.html` directly, for example:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000`.
+
 After making the edits update the repository and commit your changes. 
 
 ### 2 - Publish the Website on GitHub Pages
