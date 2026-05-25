@@ -35,5 +35,8 @@ The website can be published following the given steps:
 3. Wait for some time and you can see the first deployment following the provided link at your domain 🎉.
 
 4. Afterwards, your commits will update the website each time. 
+
+The website is available at the following link: https://vfiszbin.github.io/CS503-Visual-Intelligence-Project-Webpage/
+
 ---
 This template has been taken from [here](https://nerfies.github.io).
