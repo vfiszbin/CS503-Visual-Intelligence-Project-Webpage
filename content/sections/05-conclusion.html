@@ -1,0 +1,42 @@
+<section class="section" id="conclusion">
+  <!-- State final takeaways:
+       Caption/text modality did not help in these experiments.
+       Moving from global S2 to local R2 geometry was the largest architectural gain.
+       Classifier priors improved canton-level accuracy without worsening distance/entropy.
+       Limitations: Switzerland-only inductive bias, local R2 may not generalize globally, data bias, ambiguous scenes, cigar-shaped distributions.
+       Future work: robustness, data augmentation, stronger image encoders such as DINO, better priors or uncertainty calibration.
+       Visualize: final takeaway cards plus best-model summary. -->
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">V. Conclusion and Limitations</h2>
+    <div class="takeaway-grid">
+      <div class="takeaway-item">
+        <h3 class="title is-5">Text Was Not Enough</h3>
+        <p>Caption and prompting variants did not improve performance in the final experiments.</p>
+      </div>
+      <div class="takeaway-item">
+        <h3 class="title is-5">Geometry Mattered Most</h3>
+        <p>The S2-to-R2 transition was the clearest architectural gain for Switzerland-only geolocalization.</p>
+      </div>
+      <div class="takeaway-item">
+        <h3 class="title is-5">Priors Helped Regions</h3>
+        <p>Classifier priors improved canton accuracy from 54.89% to 58.96% while keeping distance at 13.3 km.</p>
+      </div>
+    </div>
+
+    <div class="content has-text-justified">
+      <p>
+        The main lesson is that the best model comes from matching the geometry and priors to the task. The local R2 formulation should not
+        be read as universally better than spherical modeling; it works here because the prediction space is restricted to Switzerland.
+      </p>
+      <p>
+        Important limitations remain. The model inherits the CH-only inductive bias, may not generalize globally, and can struggle with
+        ambiguous or generic scenes. The progress presentation also highlights cigar-shaped distributions and data-bias effects as failure
+        modes worth investigating further.
+      </p>
+      <p>
+        Future work should test robustness, data augmentation, stronger image encoders such as DINO, better classifier priors, and explicit
+        uncertainty calibration for ambiguous images.
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,35 @@
+<section class="section" id="intro">
+  <!-- Explain image geolocalization: predicting latitude/longitude from a street-view image.
+       Focus on Switzerland and why uncertainty matters.
+       Mention OpenStreetView-5M CH subset: train 19,917, val 1,991, test 1,993.
+       Visualize: Locarno cable-car teaser image, Switzerland map, task input-to-location diagram. -->
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">I. Introduction</h2>
+    <div class="columns is-variable is-6 is-vcentered">
+      <div class="column is-half">
+        <div class="content has-text-justified">
+          <p>
+            Image geolocalization asks a simple but difficult question: where was this image taken? In our setting, the output is a
+            latitude and longitude inside Switzerland, inferred from street-level visual evidence such as roads, landscape, mountains,
+            architecture, signs, and scene context.
+          </p>
+          <p>
+            The Switzerland subset of OpenStreetView-5M contains 19,917 training images, 1,991 validation images, and 1,993 test images.
+            This local scope makes the task small enough to study carefully, while still leaving hard ambiguities between visually similar
+            roads, villages, railway scenes, and mountain regions.
+          </p>
+          <p>
+            A key goal is to go beyond deterministic point prediction. When an image is ambiguous, the model should express uncertainty as
+            a spatial distribution rather than pretending that a single coordinate is fully certain.
+          </p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/teaser/switzerland-scope.png" alt="Map showing the Switzerland prediction scope.">
+          <figcaption>Prediction is constrained to Switzerland, where a local geometry can be exploited.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

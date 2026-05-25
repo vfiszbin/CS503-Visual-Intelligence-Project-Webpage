@@ -1,0 +1,49 @@
+<section class="section section-alt" id="related-work">
+  <!-- Summarize retrieval, classification, and hybrid geolocalization methods.
+       Include StreetCLIP, PIGEON, OpenStreetView-5M, generative flow/diffusion geolocalization, and LocDiff.
+       State the gap: deterministic methods miss ambiguity; generative methods model distributions but text/caption utility is unclear.
+       Visualize: compact taxonomy from deterministic to probabilistic methods. -->
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">II. Related Works</h2>
+    <div class="content has-text-justified">
+      <p>
+        Traditional visual geolocalization often uses retrieval, classification, or hybrid pipelines. Retrieval methods compare a query
+        image against geo-tagged references, while classification methods discretize the world into geographic cells or regions. Hybrid
+        systems such as PIGEON combine learned geographic priors with strong visual representations.
+      </p>
+      <p>
+        Foundation-model approaches such as StreetCLIP and multimodal geolocalization systems add semantic cues from captions, metadata,
+        or language-image pretraining. The original proposal expected these text signals to help by exposing geographic cues that are hard
+        to read directly from pixels.
+      </p>
+      <p>
+        More recent generative methods, including diffusion and flow-matching geolocalization work, predict spatial distributions instead
+        of only point estimates. This project fits into that line: it asks which modeling choices make probabilistic geolocalization useful
+        in a local Swiss setting.
+      </p>
+    </div>
+
+    <div class="taxonomy-grid">
+      <div class="taxonomy-item">
+        <span class="tag is-light">Deterministic</span>
+        <h3 class="title is-5">Retrieval</h3>
+        <p>Match the query image to geo-tagged reference images.</p>
+      </div>
+      <div class="taxonomy-item">
+        <span class="tag is-light">Deterministic</span>
+        <h3 class="title is-5">Classification</h3>
+        <p>Predict a geographic region, grid cell, or canton label.</p>
+      </div>
+      <div class="taxonomy-item">
+        <span class="tag is-light">Hybrid</span>
+        <h3 class="title is-5">Priors + Vision</h3>
+        <p>Combine visual encoders with region-level priors.</p>
+      </div>
+      <div class="taxonomy-item">
+        <span class="tag is-light">Probabilistic</span>
+        <h3 class="title is-5">Flow Matching</h3>
+        <p>Generate samples that form a spatial probability heatmap.</p>
+      </div>
+    </div>
+  </div>
+</section>

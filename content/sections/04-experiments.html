@@ -1,0 +1,118 @@
+<section class="section section-alt" id="experiments">
+  <!-- Organize results by experiment:
+       1. Text/caption prompting ablation: captions did not improve final performance.
+       2. S2 vs R2: S2 RFM 71.9 km / 10.64% / 1.34 entropy; R2 FM 44.1 km / 22.03% / 0.43 entropy.
+       3. Classifier prior: R2 tuned 14.5 km / 54.89% / 0.13; with prior 13.3 km / 58.96% / 0.13; classifier accuracy 69.74%.
+       4. Final comparison table:
+          Regression baseline 15.5 km / 52.73%;
+          S2 RFM baseline 71.9 km / 10.64% / 1.34;
+          R2 FM baseline 44.1 km / 22.03% / 0.43;
+          R2 tuned 14.5 km / 54.89% / 0.13;
+          R2 tuned + classifier prior 13.3 km / 58.96% / 0.13.
+       Visualize: metrics table/bar chart, Ticino/Vaud prediction maps, road/railway qualitative examples, uncertainty/failure examples from progress slides. -->
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">IV. Experiments</h2>
+    <div class="content has-text-justified">
+      <p>
+        The experiments test which changes actually improve probabilistic geolocalization. Caption and prompting variants were evaluated
+        first, but the final presentation reports that adding text captions did not improve the model in these experiments.
+      </p>
+      <p>
+        The largest improvement comes from replacing global spherical Riemannian flow matching with a local R2 flow-matching setup. Adding
+        a classifier prior then improves region-level canton accuracy without worsening the distance or entropy metrics.
+      </p>
+    </div>
+
+    <div class="columns is-variable is-6 is-vcentered">
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/results/text-ablation-mode-median.png" alt="Text prompting ablation mode median distance chart.">
+          <figcaption>Text conditioning and prompt variants did not outperform the final image-only direction.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/method/canton-prior.png" alt="Example canton prior distribution.">
+          <figcaption>The classifier prior gives the flow model an explicit canton-level regional hint.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="columns is-variable is-6 is-vcentered">
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/results/global-s2-flow-trajectories.gif" alt="Spherical flow trajectories over the globe.">
+          <figcaption>S2 RFM models trajectories on the globe, which is expressive but too broad for the local Swiss task.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/results/local-r2-flow-trajectories.gif" alt="Local R2 flow trajectories over Switzerland.">
+          <figcaption>Local R2 flow keeps sampling and prediction focused on the Switzerland-only scope.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <h3 class="title is-4">Final Model Comparison</h3>
+    <div class="table-container">
+      <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Mode median distance ↓</th>
+            <th>Canton accuracy ↑</th>
+            <th>Mean entropy ↓</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="metrics-table-body">
+          <tr>
+            <td colspan="5">Loading metrics...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="metric-bars" id="mode-distance-bars" aria-label="Mode median distance chart"></div>
+
+    <h3 class="title is-4">Qualitative Results</h3>
+    <div class="columns is-multiline">
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/results/canton-ticino.png" alt="Predicted and ground-truth locations for Ticino examples.">
+          <figcaption>Ticino examples show a localized cluster around the correct canton.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/results/canton-vaud.png" alt="Predicted and ground-truth locations for Vaud examples.">
+          <figcaption>Vaud examples illustrate how mode predictions compare with the ground truth.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/examples/road-examples.png" alt="Road scene examples used for qualitative geolocalization.">
+          <figcaption>Road scenes contain strong cues but can be visually repetitive across cantons.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/examples/road-prediction-map.png" alt="Predicted and ground-truth locations for road scene examples.">
+          <figcaption>Road predictions expose when visually similar roads lead to clustered but imperfect localization.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/examples/railway-examples.png" alt="Railway scene examples used for qualitative geolocalization.">
+          <figcaption>Railway scenes expose ambiguity and data-bias effects discussed in the progress presentation.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/examples/railway-prediction-map.png" alt="Predicted and ground-truth locations for railway scene examples.">
+          <figcaption>Railway predictions show the region-level behavior of the final model on a distinct scene type.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,61 @@
+<section class="section" id="method">
+  <!-- Present baseline regression model, S2 Riemannian Flow Matching, local R2 Euclidean Flow Matching, and classifier-prior conditioning.
+       Define metrics: mode median distance, canton accuracy, mean entropy.
+       Explain final tuned R2 setup: CFG=0, LayerNorm on conditioning signal, 100 epochs.
+       Visualize: baseline architecture, S2-to-R2 geometry diagram, R2 FM pipeline, classifier-prior pipeline. -->
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">III. Methodology</h2>
+    <div class="content has-text-justified">
+      <p>
+        The project compares deterministic and probabilistic models. The regression baseline maps a StreetCLIP image embedding directly to
+        latitude and longitude. The flow-matching variants instead sample many trajectories and aggregate their endpoints into a predicted
+        spatial distribution.
+      </p>
+      <p>
+        The initial generative baseline used a spherical S2 formulation. The final presentation shows that replacing this with a local R2
+        Euclidean formulation is the most important architectural change: Switzerland is geographically small enough that the flat local
+        approximation gives a better inductive bias for this task.
+      </p>
+      <p>
+        The final tuned R2 model uses CFG=0, LayerNorm on the conditioning signal, and 100 training epochs. A later variant concatenates a
+        classifier-derived canton prior with the visual embedding before conditioning the flow model.
+      </p>
+    </div>
+
+    <div class="columns is-multiline method-gallery">
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/method/regression-baseline.png" alt="Regression baseline architecture.">
+          <figcaption>Baseline: StreetCLIP image features followed by an MLP that regresses latitude and longitude.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-half">
+        <figure class="media-figure">
+          <img src="./static/images/method/r2-fm-pipeline.png" alt="R2 Euclidean flow matching pipeline.">
+          <figcaption>R2 flow matching: visual conditioning, Euclidean flow, and a spatial distribution output.</figcaption>
+        </figure>
+      </div>
+      <div class="column is-full">
+        <figure class="media-figure">
+          <img src="./static/images/method/classifier-prior-pipeline.png" alt="Flow matching pipeline with classifier prior conditioning.">
+          <figcaption>Classifier-prior variant: the image encoder and canton classifier jointly condition the flow model.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="metric-definitions">
+      <div>
+        <strong>Mode median distance</strong>
+        <p>Median distance between the model's most likely predicted location and the true location.</p>
+      </div>
+      <div>
+        <strong>Canton accuracy</strong>
+        <p>Accuracy of the predicted mode after mapping coordinates to Swiss canton labels.</p>
+      </div>
+      <div>
+        <strong>Mean entropy</strong>
+        <p>Compactness of the predicted heatmap; lower entropy means a sharper predicted distribution.</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,37 @@
+[
+  {
+    "method": "Regression baseline",
+    "modeMedianKm": 15.5,
+    "cantonAccuracyPct": 52.73,
+    "meanEntropy": null,
+    "note": "Deterministic latitude/longitude regression baseline."
+  },
+  {
+    "method": "S2 RFM baseline",
+    "modeMedianKm": 71.9,
+    "cantonAccuracyPct": 10.64,
+    "meanEntropy": 1.34,
+    "note": "Riemannian flow matching on the sphere."
+  },
+  {
+    "method": "R2 FM baseline",
+    "modeMedianKm": 44.1,
+    "cantonAccuracyPct": 22.03,
+    "meanEntropy": 0.43,
+    "note": "Local Euclidean flow matching over Switzerland."
+  },
+  {
+    "method": "R2 tuned",
+    "modeMedianKm": 14.5,
+    "cantonAccuracyPct": 54.89,
+    "meanEntropy": 0.13,
+    "note": "CFG=0, LayerNorm on conditioning signal, 100 epochs."
+  },
+  {
+    "method": "R2 tuned + classifier prior",
+    "modeMedianKm": 13.3,
+    "cantonAccuracyPct": 58.96,
+    "meanEntropy": 0.13,
+    "note": "Best final model; direct classifier accuracy is 69.74%."
+  }
+]

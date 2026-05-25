@@ -1,39 +1,31 @@
-<p align="center">
-  <img src="assets/epfl_logo.svg" alt="description" width="200">
-</p>
-<h1 align="center">EPFL CS503 - Visual Intelligence<br>Machine and Minds <br>Course Project Website Template</h1>
+# CS503 Visual Intelligence Project Webpage
 
-This repository contains the template code for preparing final project reports using GitHub Page. 
+Static GitHub Pages webpage for **Flow Matching for Probabilistic Image Geolocalization in Switzerland**.
 
-## Steps to Use the Template
-Follow the given steps to clone the repository to your local and publish on the website afterwards. 
+## Structure
 
-### 1 - Clone and Edit the Repository 
+```text
+index.html                         # Page shell: metadata, title, abstract, navigation
+content/sections/                  # Maintainable section partials loaded by JavaScript
+static/data/metrics.json           # Final quantitative results used by the experiments table
+static/images/teaser/              # Teaser and task framing images
+static/images/method/              # Model and pipeline diagrams
+static/images/results/             # Quantitative and canton-level visualizations
+static/images/examples/            # Qualitative road and railway examples
+static/docs/                       # Final slides, progress report, and proposal
+static/js/include-sections.js      # Loads section partials and renders metrics
+```
+
+## Local Preview
+
+Because sections are loaded with `fetch`, preview with a local HTTP server instead of opening `index.html` directly:
+
 ```bash
-git clone https://github.com/EPFL-VILAB/cs503-project-webpage-template.git
-```
-After cloning the repository, make changes in the file `index.html` to modify your website as you wish. The parts that can be edited are labeled with following blocks: 
-
-```html
-<!--TODO: CODE BLOCK DESCRIPTION-->
-
-
-<!-------------------------------->
+python3 -m http.server 8000
 ```
 
-The `static` folder can be used for storing images, gifs, videos and other content that can be used in the report for reporting. 
+Then open `http://localhost:8000`.
 
-After making the edits update the repository and commit your changes. 
+## Content Source Priority
 
-### 2 - Publish the Website on GitHub Pages
-The website can be published following the given steps: 
-
-1. Go to _Settings_ in of the repository and select _Pages_ under the group _Code and Automation_ from the left corner options. 
-
-2. Select the source as _Deploy from a branch_ 
-
-3. Wait for some time and you can see the first deployment following the provided link at your domain 🎉.
-
-4. Afterwards, your commits will update the website each time. 
----
-This template has been taken from [here](https://nerfies.github.io).
+The webpage follows the final presentation first, the progress presentation second, and the proposal only for stable motivation or related-work context.
