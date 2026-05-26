@@ -419,11 +419,14 @@
   function renderDetailPlot(target, titleTarget, data, geojson, cantonId) {
     var selectedRegions = getSelectedRegions(data, cantonId);
     var pointEntries = flattenPoints(selectedRegions);
-    var connectors = connectorCoordinates(pointEntries);
+    var showPredictions = Boolean(cantonId);
+    var connectors = showPredictions ? connectorCoordinates(pointEntries) : { lon: [], lat: [] };
     var selectedIds = {};
-    selectedRegions.forEach(function(region) {
-      selectedIds[region.id] = true;
-    });
+    if (showPredictions) {
+      selectedRegions.forEach(function(region) {
+        selectedIds[region.id] = true;
+      });
+    }
 
     var backgroundTrace = {
       type: 'choropleth',
@@ -501,6 +504,9 @@
       hovertemplate: '<b>Mode prediction</b><br>%{customdata[0]}<br>%{customdata[1]}<br>mode error=%{customdata[2]} km<extra></extra>'
     };
     var summary = selectionSummary(data, cantonId);
+    var traces = showPredictions
+      ? [backgroundTrace, connectorTrace, gtTrace, predictionTrace]
+      : [backgroundTrace, gtTrace];
     var layout = {
       autosize: true,
       margin: {
@@ -524,8 +530,10 @@
       }
     };
 
-    titleTarget.textContent = summary.label + ' ground truth vs mode prediction';
-    return window.Plotly.react(target, [backgroundTrace, connectorTrace, gtTrace, predictionTrace], layout, plotConfig());
+    titleTarget.textContent = showPredictions
+      ? summary.label + ' ground truth vs mode prediction'
+      : 'All cantons ground truth positions';
+    return window.Plotly.react(target, traces, layout, plotConfig());
   }
 
   function renderError(container, message) {

@@ -19,7 +19,7 @@ DEFAULT_VISUAL_PROJECT_ROOT = Path("/scratch/izar/youyang/CS503-Visual-Intellige
 DEFAULT_CONFIG_PATH = DEFAULT_VISUAL_PROJECT_ROOT / "config/experiments/plonk_local_fm_r2_image_only.yaml"
 DEFAULT_CHECKPOINT_PATH = Path(
     "/scratch/izar/youyang/visual_geolocation_cfm_poc/runs/"
-    "plonk_local_fm_r2_image_only_seed42/checkpoint_best.pt"
+    "plonk_local_fm_r2_layernorm_cfg0_longrun_seed42/checkpoint_best.pt"
 )
 DEFAULT_OUTPUT_PATH = WEB_ROOT / "static/data/canton-predictions.json"
 DEFAULT_EVAL_ROOT = Path("/tmp/canton-prediction-map-eval")
