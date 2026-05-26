@@ -254,6 +254,115 @@ body {
   color: #9f1239;
 }
 
+.canton-map-section-title {
+  margin-top: 2rem;
+}
+
+.canton-prediction-dashboard {
+  margin-top: 1rem;
+}
+
+.canton-map-card {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.canton-map-header {
+  margin-bottom: 0.75rem;
+}
+
+.canton-map-header .title {
+  margin-bottom: 0.35rem;
+}
+
+.canton-map-description {
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+.canton-map-metrics {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.canton-map-metric {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+}
+
+.canton-map-metric span,
+.canton-map-metric strong {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.canton-map-metric span {
+  color: #6b7280;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.canton-map-metric strong {
+  color: #111827;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin-top: 0.2rem;
+}
+
+.canton-map-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+}
+
+.canton-map-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-width: 0;
+  padding: 0.75rem;
+}
+
+.canton-map-panel-title {
+  color: #1f2937;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+.canton-map-chart {
+  width: 100%;
+}
+
+.canton-map-chart-main {
+  min-height: 420px;
+}
+
+.canton-map-chart-detail {
+  min-height: 420px;
+}
+
+.canton-map-attribution {
+  color: #6b7280;
+  font-size: 0.82rem;
+  margin: 0.75rem 0 0;
+}
+
+.canton-map-attribution a {
+  color: #2563eb;
+}
+
 @media screen and (max-width: 768px) {
   .experiment-card {
     padding: 0.75rem;
@@ -264,6 +373,20 @@ body {
   }
 
   .experiment-plot {
+    min-height: 360px;
+  }
+
+  .canton-map-card {
+    padding: 0.75rem;
+  }
+
+  .canton-map-metrics,
+  .canton-map-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .canton-map-chart-main,
+  .canton-map-chart-detail {
     min-height: 360px;
   }
 }
