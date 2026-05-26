@@ -7,7 +7,7 @@
         <h2 class="title is-3" id="intro">I. Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            Image geolocation is important for various tasks such as emergency responses, navigation, and urban
+            Image geolocation is important for various tasks such as investigative journalism, navigation, and urban
             analysis <a href="#ref1">[1]</a>. However, in reality, geolocation metadata is frequently missing for
             reasons like security. This data gap can be filled by image geolocalization, a method of determining the
             location given an image <a href="#ref2">[2]</a>. In this task, street-view images are particularly valuable
@@ -15,31 +15,40 @@
           </p>
 
           <p>
-            Previously, image geolocalization often relied on matching a query image against geo-tagged databases or
-            assigning it to predefined spatial partitions, facing hurdles like sparse reference coverage and coarse
-            geo-partitions. Furthermore, these methods are deterministic and often rely on a single modality of
-            information. Recent research has shifted toward generative multimodal learning, which can model spatial
-            ambiguity and integrate auxiliary signals as well. This motivates a systematic study of how different data
-            modalities and modeling choices can be combined to make image geolocalization more accurate and robust.
+            Image geolocalization remains challenging because many real-world scenes are inherently ambiguous, as visually similar
+            locations can exist across distant geographic regions. Recent generative approaches based on diffusion and flow matching
+            address this issue by modeling geolocation as a spatial distribution rather than a single point estimate
+            <a href="#ref8">[8]</a>, <a href="#ref9">[9]</a>.
+          </p>
+          
+          <p>
+            In this project, we revisit flow matching-based geolocalization <a href="#ref8">[8]</a> in a local setting restricted to Switzerland.
+            Unlike prior work operating on the Earth sphere \(S^2\) at global scale, we investigate whether a simpler Euclidean formulation in
+            \(\mathbb{R}^2\) is better suited for localized geographic regions. We further explore several conditioning and architectural
+            design choices to better understand their impact on flow matching-based geolocalization.
           </p>
 
           <h3 class="title is-4">Our Contributions:</h3>
           <ol>
             <li>
-              <strong>Modality Ablation:</strong> How do different modalities contribute to image geolocalization?
-              Specifically, we evaluate whether textual descriptions and potentially aerial imagery improve performance
-              beyond street-view imagery alone, and which signals are most informative.
+              <strong>Local Flow Matching Formulation:</strong>
+              We adapt generative geolocalization to a Switzerland-focused setting and compare a standard spherical formulation on \(S^2\)
+              with a simpler Euclidean formulation in \(\mathbb{R}^2\).
             </li>
             <li>
-              <strong>Methods Comparison:</strong> How do deterministic, generative, and hybrid approaches perform in
-              image geolocalization? In particular, we compare flow matching-based generative models with classification
-              and hybrid baselines to understand their strengths and limitations.
+              <strong>Conditioning Strategies:</strong>
+              We explore multiple conditioning signals for flow matching-based geolocalization, including image embeddings, generated captions,
+              and canton-level classifier priors.
             </li>
             <li>
-              <strong>Generative Pipeline Design:</strong> How do design choices in a generative geolocalization pipeline
-              affect performance? In particular, how do different conditioning strategies and sampling settings influence
-              the quality and sharpness of predicted spatial distributions, and how can these predictions be effectively
-              visualized?
+              <strong>Architecture and Sampling Analysis:</strong>
+              We investigate the impact of several design choices, including conditioning normalization, classifier-free guidance strength,
+              number of flow matching steps, sampling strategies, image augmentations.
+            </li>
+            <li>
+              <strong>Comparison with Deterministic Baselines:</strong>
+              We compare generative flow matching approaches with simpler deterministic baselines such as coordinate regression and canton
+              classification models.
             </li>
           </ol>
         </div>
