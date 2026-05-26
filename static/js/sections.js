@@ -12,7 +12,7 @@
   function loadSection(element) {
     var source = element.getAttribute('data-include');
 
-    return fetch(source)
+    return fetch(source, { cache: 'no-cache' })
       .then(function(response) {
         if (!response.ok) {
           throw new Error('Could not load section: ' + source);

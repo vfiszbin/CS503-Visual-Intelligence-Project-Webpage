@@ -155,3 +155,115 @@ body {
 #interpolation-image-wrapper img {
   border-radius: 5px;
 }
+
+.experiment-dashboard {
+  margin-top: 1rem;
+}
+
+.experiment-card {
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.experiment-card:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.experiment-card-header {
+  margin-bottom: 0.75rem;
+}
+
+.experiment-card-header .title {
+  margin-bottom: 0.35rem;
+}
+
+.experiment-description {
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+.experiment-plot-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.experiment-plot-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-width: 0;
+  padding: 0.75rem;
+}
+
+.experiment-plot-title {
+  color: #1f2937;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.experiment-plot {
+  width: 100%;
+  min-height: 360px;
+}
+
+.experiment-summary {
+  margin-top: 1rem;
+}
+
+.experiment-summary table {
+  margin-bottom: 0;
+}
+
+.experiment-summary caption {
+  caption-side: bottom;
+  color: #6b7280;
+  font-size: 0.85rem;
+  padding-top: 0.5rem;
+  text-align: left;
+}
+
+.experiment-swatch {
+  border-radius: 999px;
+  display: inline-block;
+  height: 0.75rem;
+  margin-right: 0.5rem;
+  vertical-align: -0.05rem;
+  width: 0.75rem;
+}
+
+.experiment-status {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  color: #4b5563;
+  display: flex;
+  min-height: 9rem;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+
+.experiment-error {
+  background: #fff7f7;
+  border-color: #f2b8b8;
+  color: #9f1239;
+}
+
+@media screen and (max-width: 768px) {
+  .experiment-card {
+    padding: 0.75rem;
+  }
+
+  .experiment-plot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .experiment-plot {
+    min-height: 360px;
+  }
+}
