@@ -192,11 +192,55 @@
           </p>
         </div>
 
+        <h3 class="title is-4">Conditioning flow matching with classifier priors</h3>
+        <div class="content has-text-justified">
+          <p>
+            We noticed that a simple canton classifier achieved higher canton-level accuracy than our flow matching model.
+            The classifier reached 69.74% canton accuracy, while the tuned ($R^2$) flow matching model<sup class="experiment-note-ref">1</sup> achieved 54.89%. This suggested that the classifier probabilities contained a strong coarse geographic signal that the flow model was not fully exploiting.
+          </p>
+          <p class="experiment-note">
+            <sup>1</sup> Tuned $R^2$ model: CFG=0, LayerNorm, trained for 100 epochs.
+          </p>
+          <p>
+            We therefore used the classifier output probability distribution as an additional conditioning signal for flow matching. The 26-dimensional canton probability vector was concatenated with the image embedding before conditioning the flow matching model.
+          </p>
+        </div>
 
-          <h3 class="title is-4">Classifier Probability Conditioning</h3>
-          <div id="classifier-conditioning-dashboard" class="metric-dashboard-host" aria-live="polite">
-            <div class="experiment-status">Loading classifier conditioning results...</div>
-          </div>
+        <figure class="experiment-architecture-figure">
+          <img
+            src="./static/images/model_architecture/fm_architecture_img+probs_distrib.svg"
+            alt="Flow matching architecture with image embeddings and canton classifier probability conditioning."
+          />
+          <figcaption>
+            Flow matching architecture with image embeddings and canton classifier probability conditioning.
+          </figcaption>
+        </figure>
+
+        <div class="content has-text-justified">
+          <p>
+            We evaluated three variants:
+          </p>
+          <ul>
+            <li>image only: tuned ($R^2$) flow matching baseline</li>
+            <li>image + probs: image embedding concatenated with classifier probabilities</li>
+            <li>probs only: conditioning using only the canton probability vector</li>
+          </ul>
+        </div>
+
+        <div id="classifier-conditioning-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading classifier conditioning results...</div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            The classifier probabilities mainly act as a coarse regional prior. They narrow the plausible geographic area, while the flow matching model still handles the fine-grained localization within the canton.
+            The classifier prior improves overall performance, most specifically the canton accuracy, implying that the flow model could be leveraging the coarse regional signal from the classifier.
+          </p>
+
+          <p>
+            Interestingly, the classifier probabilities alone already give strong localization performance. One possible explanation is that, without image information, the flow model learns to place predictions in statistically "average" locations inside likely cantons, which already reduces the median distance significantly. In addition, the full canton probability distribution may contain much richer geographic information than a single predicted label, implicitly encoding neighboring regions and coarse spatial structure across Switzerland. For comparison, a flow matching model trained without any conditioning reaches a much worse median distance of 68.9 km.
+          </p>
+        </div>
 
           <h3 class="title is-4 experiment-curves-title">Training Curves and Ablations</h3>
           <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
