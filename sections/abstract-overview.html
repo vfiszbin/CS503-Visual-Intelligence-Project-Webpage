@@ -8,14 +8,23 @@
         <div class="content has-text-justified">
           <p>
             <!-- TODO: Replace this abstract with your own project summary (3-5 sentences). -->
-            [Problem] Briefly describe the problem your project tackles and why it matters.
+            [Problem] Imagine you are given a photo with no GPS, no text, and no location record, 
+            but you still want to know where it was taken. Image geolocalization tackles this problem 
+            by predicting location from visual clues, which is important for applications like 
+            navigation and for testing whether a model truly understands scenes and spatial cues.
           </p>
           <p>
-            [Approach] Explain your main idea, model, or system in one to two sentences.
+            [Approach] To address this problem, we explore a generative approach that uses a 
+            Flow Matching model to construct a probability distribution over possible locations.
           </p>
           <p>
-            [Results] Summarize key outcomes, such as quantitative improvements, qualitative
-            observations, and main conclusions.
+            [Results] Our experimental results show that pure image features are more effective than 
+            fused image-text features. In addition, for relatively small geographic regions, 
+            representing the flow-matching trajectory space in rectangular coordinates is more 
+            appropriate than using spherical coordinates. We also find that using the output of 
+            a classification model as a condition for the Flow Matching model further improves 
+            performance.Those findings show that the Flow Matching model has great potential for 
+            addressing the geolocalization problem.
           </p>
         </div>
       </div>
