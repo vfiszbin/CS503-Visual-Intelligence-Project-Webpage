@@ -242,7 +242,7 @@
           </p>
         </div>
 
-          <h3 class="title is-4 experiment-curves-title">Training Curves and Ablations</h3>
+        <h3 class="title is-4 experiment-curves-title mt-5">Training Curves and Ablations</h3>
           <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
             <div class="experiment-status">Loading experiment results...</div>
           </div>
@@ -250,6 +250,70 @@
           <div id="canton-prediction-dashboard" class="canton-prediction-dashboard" aria-live="polite">
             <div class="experiment-status">Loading canton prediction map...</div>
           </div>
+
+        <h3 class="title is-4 mt-5">Thematic Switzerland Performance</h3>
+        <div class="content has-text-justified">
+          <p>
+            To better understand the strengths and weaknesses of the Flow Matching model, we analyzed its geolocation predictions across several themes. The tabs below present the input image collections alongside their corresponding predictions and ground truths.
+          </p>
+        </div>
+
+        <div class="tabs is-centered is-toggle is-toggle-rounded">
+          <ul>
+            <li class="is-active theme-tab-link" data-tab="tab-city"><a>City</a></li>
+            <li class="theme-tab-link" data-tab="tab-countryside"><a>Countryside</a></li>
+            <li class="theme-tab-link" data-tab="tab-railway"><a>Railway</a></li>
+            <li class="theme-tab-link" data-tab="tab-road"><a>Road</a></li>
+            <li class="theme-tab-link" data-tab="tab-snow"><a>Snow View</a></li>
+          </ul>
+        </div>
+
+        <div id="tab-city" class="theme-tab-content has-text-centered">
+          <figure>
+            <img src="./static/images/thematic_switzerland/fm_results/city_images.png" alt="City Photos" style="margin-bottom: 20px;">
+            <br>
+            <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
+            <img src="./static/images/thematic_switzerland/fm_results/city_switzerland_map.png" alt="City Predictions Map">
+          </figure>
+        </div>
+        <div id="tab-countryside" class="theme-tab-content has-text-centered" style="display: none;">
+          <figure>
+            <img src="./static/images/thematic_switzerland/fm_results/countryside_images.png" alt="Countryside Photos" style="margin-bottom: 20px;">
+            <br>
+            <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
+            <img src="./static/images/thematic_switzerland/fm_results/countryside_switzerland_map.png" alt="Countryside Predictions Map">
+          </figure>
+        </div>
+        <div id="tab-railway" class="theme-tab-content has-text-centered" style="display: none;">
+          <figure>
+            <img src="./static/images/thematic_switzerland/fm_results/railway_images.png" alt="Railway Photos" style="margin-bottom: 20px;">
+            <br>
+            <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
+            <img src="./static/images/thematic_switzerland/fm_results/railway_switzerland_map.png" alt="Railway Predictions Map">
+          </figure>
+        </div>
+        <div id="tab-road" class="theme-tab-content has-text-centered" style="display: none;">
+          <figure>
+            <img src="./static/images/thematic_switzerland/fm_results/road_images.png" alt="Road Photos" style="margin-bottom: 20px;">
+            <br>
+            <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
+            <img src="./static/images/thematic_switzerland/fm_results/road_switzerland_map.png" alt="Road Predictions Map">
+          </figure>
+        </div>
+        <div id="tab-snow" class="theme-tab-content has-text-centered" style="display: none;">
+          <figure>
+            <img src="./static/images/thematic_switzerland/fm_results/snow_view_images.png" alt="Snow Photos" style="margin-bottom: 20px;">
+            <br>
+            <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
+            <img src="./static/images/thematic_switzerland/fm_results/snow_view_switzerland_map.png" alt="Snow Predictions Map">
+          </figure>
+        </div>
+
+        <div class="content has-text-justified mt-5">
+          <p>
+            After examining the model’s performance across different themes, we found that the frequency with which a scene appears in the training dataset is positively correlated with evaluation performance: scenes that appear more often tend to yield better results. As a result, road scenes perform the best, while railway scenes perform relatively worse because they occur less frequently in the training set. Surprisingly, predictions for snow views are highly accurate, possibly because snowy scenes are geographically concentrated in a limited number of characteristic locations, such as ski resorts and mountainous regions, making them easier for the model to localize.
+          </p>
+        </div>
       </div>
     </div>
     <!--/ Experiments. -->

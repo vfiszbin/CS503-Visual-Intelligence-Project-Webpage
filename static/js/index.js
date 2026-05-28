@@ -69,6 +69,33 @@ function initializePageComponents() {
   bulmaSlider.attach();
 }
 
+window.switchThemeTab = function(element, tabId) {
+  // Remove 'is-active' from all tabs
+  const tabs = element.parentNode.children;
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].classList.remove('is-active');
+  }
+  // Add 'is-active' to clicked tab
+  element.classList.add('is-active');
+
+  // Hide all tab contents
+  const contents = document.getElementsByClassName('theme-tab-content');
+  for (let i = 0; i < contents.length; i++) {
+    contents[i].style.display = 'none';
+  }
+  // Show target tab content
+  document.getElementById(tabId).style.display = 'block';
+}
+
+$(document).on('click', '.theme-tab-link', function(e) {
+  e.preventDefault();
+  $(this).siblings().removeClass('is-active');
+  $(this).addClass('is-active');
+  var tabId = $(this).attr('data-tab');
+  $('.theme-tab-content').hide();
+  $('#' + tabId).show();
+});
+
 $(document).ready(function() {
   var sectionsReady = window.sectionsReady || Promise.resolve();
 
