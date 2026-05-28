@@ -6,6 +6,37 @@
       <div class="column is-full-width">
         <h2 class="title is-3" id="experiments">IV. Experiments</h2>
 
+        <h3 class="title is-4">Evaluation Metrics</h3>
+        <div class="content has-text-justified">
+          <p>
+            We evaluate the predicted geolocation distributions using several metrics. The experimental results reported in the following sections use the metrics defined below.
+          </p>
+          <p>
+            <strong>Mode median error</strong> measures the haversine distance between the ground-truth coordinates and the predicted mode of the sampled distribution. The mode is estimated as the sampled particle with the highest local kernel-density score.
+          </p>
+          <p>
+            For each sampled coordinate $i$, we compute:
+          </p>
+          $$
+          \mathrm{score}_i = \sum_j w_j \exp\left(-\frac{d(i,j)^2}{2h^2}\right)
+          $$
+          <p>
+            where $d(i,j)$ is the distance between samples, $h$ is a bandwidth parameter, and $w_j$ is the sample weight. In our current sampling setup, the sample weights are uniform. Samples in dense neighborhoods receive higher scores than isolated samples.
+          </p>
+          <p>
+            <strong>Heatmap entropy</strong> measures the spatial uncertainty of the predicted distribution. The sampled particles are binned into a latitude/longitude histogram, the histogram mass is normalized into probabilities, and Shannon entropy is computed:
+          </p>
+          $$
+          H(p) = -\sum_i p_i \log p_i
+          $$
+          <p>
+            Lower entropy indicates concentrated predictions, while higher entropy corresponds to more spatially spread predictions.
+          </p>
+          <p>
+            <strong>Canton administrative accuracy</strong> measures whether the predicted location falls inside the correct Swiss canton. For each predicted point, we reverse-geocode the coordinates using <code>reverse_geocoder</code> and compare the resulting <code>admin1</code> label against the dataset ground-truth canton label.
+          </p>
+        </div>
+
         <h3 class="title is-4">Textual caption conditioning</h3>
         <div class="content has-text-justified">
           <p>

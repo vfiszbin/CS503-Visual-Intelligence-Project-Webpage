@@ -123,7 +123,7 @@
       containerId: 'classifier-conditioning-dashboard',
       title: 'Classifier probability conditioning',
       eyebrow: 'Test split summary',
-      description: 'Comparison of image-only, region-probability-only, and concatenated conditioning variants.',
+      description: 'Comparison of image-only, canton-probability-only, and concatenated conditioning variants.',
       metrics: [
         {
           key: 'medianDistance',
@@ -136,7 +136,7 @@
         },
         {
           key: 'regionAccuracy',
-          label: 'Region accuracy',
+          label: 'Canton accuracy',
           unit: '%',
           digits: 1,
           multiplier: 100,
@@ -162,12 +162,12 @@
         },
         {
           key: 'plonk_local_fm_r2_layernorm_cfg0_region_probs_only_100epochs_seed42',
-          label: 'Region probs',
+          label: 'Canton probs',
           color: '#34d399'
         },
         {
           key: 'plonk_local_fm_r2_layernorm_cfg0_image_region_probs_concat_100epochs_seed42',
-          label: 'Image + region',
+          label: 'Image + canton',
           color: '#f59e0b'
         }
       ]
