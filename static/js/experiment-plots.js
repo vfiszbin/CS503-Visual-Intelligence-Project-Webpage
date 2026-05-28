@@ -118,6 +118,95 @@
     },
   ];
 
+  var METRIC_DASHBOARDS = [
+    {
+      containerId: 'classifier-conditioning-dashboard',
+      title: 'Classifier probability conditioning',
+      eyebrow: 'Test split summary',
+      description: 'Comparison of image-only, region-probability-only, and concatenated conditioning variants.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/classifier_probability_conditioning/test_mode_median_km.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'regionAccuracy',
+          label: 'Region accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/classifier_probability_conditioning/test_region_accuracy.csv',
+          wandbMetric: 'test/mode/admin_accuracy/region'
+        },
+        {
+          key: 'entropy',
+          label: 'Entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          csv: './static/data/classifier_probability_conditioning/test_mean_heatmap_entropy.csv',
+          wandbMetric: 'test/uncertainty/mean_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_100epochs_seed42',
+          label: 'Image only',
+          color: '#60a5fa'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_region_probs_only_100epochs_seed42',
+          label: 'Region probs',
+          color: '#34d399'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_image_region_probs_concat_100epochs_seed42',
+          label: 'Image + region',
+          color: '#f59e0b'
+        }
+      ]
+    }
+  ];
+
+  var SINGLE_METRIC_DASHBOARDS = [
+    {
+      containerId: 'caption-conditioning-summary',
+      title: 'Caption conditioning',
+      eyebrow: 'Test split median localization error',
+      description: 'Comparison of image-only inference against free-form and structured textual caption conditioning.',
+      csv: './static/data/caption_conditioning/test_mode_median_km.csv',
+      metric: 'eval/test/mode_median_km',
+      label: 'Median error',
+      unit: 'km',
+      digits: 1,
+      direction: 'lower',
+      baselineRunKey: 'image_only_seed42',
+      runs: [
+        {
+          key: 'image_only_seed42',
+          label: 'Image only',
+          color: '#60a5fa'
+        },
+        {
+          key: 'image_text_free_seed42',
+          label: 'Image + free caption',
+          color: '#34d399'
+        },
+        {
+          key: 'image_text_structured_full_seed42',
+          label: 'Image + structured caption',
+          color: '#f59e0b'
+        }
+      ]
+    }
+  ];
+
   function parseCsv(text) {
     var rows = [];
     var row = [];
@@ -211,6 +300,17 @@
     }
 
     return value.toFixed(digits);
+  }
+
+  function formatDashboardValue(value, metric) {
+    if (value === null || value === undefined) {
+      return 'n/a';
+    }
+
+    var scaledValue = value * (metric.multiplier || 1);
+    var formatted = scaledValue.toFixed(metric.digits);
+
+    return metric.unit ? formatted + metric.unit : formatted;
   }
 
   function buildMetricTraces(experiment, rows, options) {
@@ -475,6 +575,437 @@
     return window.Plotly.newPlot(target, traces, layout, config);
   }
 
+  function metricValueForRun(rows, runKey, wandbMetric) {
+    var columnName = metricColumn(runKey, wandbMetric);
+
+    assertColumn(rows, columnName, wandbMetric);
+    return getLastMetricValue(rows, columnName);
+  }
+
+  function getMetricExtent(runs, metric) {
+    var values = runs.map(function(run) {
+      return run.metrics[metric.key];
+    }).filter(function(value) {
+      return value !== null && value !== undefined;
+    });
+
+    if (!values.length) {
+      return {
+        min: 0,
+        max: 1
+      };
+    }
+
+    var min = Math.min.apply(Math, values);
+    var max = Math.max.apply(Math, values);
+
+    if (min === max) {
+      return {
+        min: min - 0.5,
+        max: max + 0.5
+      };
+    }
+
+    return {
+      min: min,
+      max: max
+    };
+  }
+
+  function metricPosition(value, extent) {
+    if (value === null || value === undefined) {
+      return 50;
+    }
+
+    var span = extent.max - extent.min;
+    var normalized = span === 0 ? 0.5 : (value - extent.min) / span;
+
+    return Math.max(0, Math.min(100, normalized * 100));
+  }
+
+  function isBestMetricValue(value, runs, metric) {
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    var values = runs.map(function(run) {
+      return run.metrics[metric.key];
+    }).filter(function(candidate) {
+      return candidate !== null && candidate !== undefined;
+    });
+    var bestValue = metric.direction === 'lower'
+      ? Math.min.apply(Math, values)
+      : Math.max.apply(Math, values);
+
+    return Math.abs(value - bestValue) < 1e-10;
+  }
+
+  function createMetricHeader(metric) {
+    var header = document.createElement('div');
+    var label = document.createElement('div');
+    var hint = document.createElement('div');
+
+    header.className = 'metric-dashboard-header-cell';
+    label.className = 'metric-dashboard-metric-label';
+    hint.className = 'metric-dashboard-metric-hint';
+    label.textContent = metric.label;
+    hint.textContent = metric.direction === 'lower' ? 'lower is better' : 'higher is better';
+
+    header.appendChild(label);
+    header.appendChild(hint);
+
+    return header;
+  }
+
+  function createRunLabel(run) {
+    var label = document.createElement('div');
+    var marker = document.createElement('span');
+    var text = document.createElement('div');
+    var name = document.createElement('div');
+
+    label.className = 'metric-dashboard-run';
+    marker.className = 'metric-dashboard-run-marker';
+    marker.style.backgroundColor = run.color;
+    text.className = 'metric-dashboard-run-text';
+    name.className = 'metric-dashboard-run-name';
+    name.textContent = run.label;
+
+    text.appendChild(name);
+    label.appendChild(marker);
+    label.appendChild(text);
+
+    return label;
+  }
+
+  function createMetricCell(run, metric, extent, runs) {
+    var value = run.metrics[metric.key];
+    var cell = document.createElement('div');
+    var track = document.createElement('div');
+    var axis = document.createElement('div');
+    var dot = document.createElement('span');
+    var valueLabel = document.createElement('span');
+    var position = metricPosition(value, extent);
+    var isBest = isBestMetricValue(value, runs, metric);
+
+    cell.className = 'metric-dashboard-cell';
+    track.className = 'metric-dashboard-track';
+    axis.className = 'metric-dashboard-axis';
+    dot.className = 'metric-dashboard-dot' + (isBest ? ' is-best' : '');
+    valueLabel.className = 'metric-dashboard-value';
+    if (position < 8) {
+      valueLabel.className += ' is-left-edge';
+    } else if (position > 92) {
+      valueLabel.className += ' is-right-edge';
+    }
+
+    dot.style.left = position + '%';
+    dot.style.backgroundColor = run.color;
+    valueLabel.style.left = position + '%';
+    valueLabel.textContent = formatDashboardValue(value, metric);
+    dot.title = run.label + ': ' + metric.label + ' ' + formatDashboardValue(value, metric);
+
+    track.appendChild(axis);
+    track.appendChild(dot);
+    track.appendChild(valueLabel);
+    cell.appendChild(track);
+
+    return cell;
+  }
+
+  function buildDashboardRuns(config, metricRowsByKey) {
+    return config.runs.map(function(run) {
+      var metrics = {};
+
+      config.metrics.forEach(function(metric) {
+        metrics[metric.key] = metricValueForRun(metricRowsByKey[metric.key], run.key, metric.wandbMetric);
+      });
+
+      return {
+        key: run.key,
+        label: run.label,
+        color: run.color,
+        metrics: metrics
+      };
+    });
+  }
+
+  function renderMetricDashboard(container, config, runs) {
+    var card = document.createElement('article');
+    var header = document.createElement('div');
+    var eyebrow = document.createElement('div');
+    var title = document.createElement('h4');
+    var description = document.createElement('p');
+    var grid = document.createElement('div');
+    var runHeader = document.createElement('div');
+    var extents = {};
+
+    config.metrics.forEach(function(metric) {
+      extents[metric.key] = getMetricExtent(runs, metric);
+    });
+
+    card.className = 'metric-dashboard-card';
+    header.className = 'metric-dashboard-card-header';
+    eyebrow.className = 'metric-dashboard-eyebrow';
+    title.className = 'title is-5';
+    description.className = 'metric-dashboard-description';
+    grid.className = 'metric-dashboard-grid';
+    grid.style.setProperty('--metric-count', config.metrics.length);
+    runHeader.className = 'metric-dashboard-run-header';
+
+    eyebrow.textContent = config.eyebrow;
+    title.textContent = config.title;
+    description.textContent = config.description;
+    runHeader.textContent = 'Variant';
+
+    header.appendChild(eyebrow);
+    header.appendChild(title);
+    header.appendChild(description);
+
+    grid.appendChild(runHeader);
+    config.metrics.forEach(function(metric) {
+      grid.appendChild(createMetricHeader(metric));
+    });
+
+    runs.forEach(function(run) {
+      grid.appendChild(createRunLabel(run));
+      config.metrics.forEach(function(metric) {
+        grid.appendChild(createMetricCell(run, metric, extents[metric.key], runs));
+      });
+    });
+
+    card.appendChild(header);
+    card.appendChild(grid);
+
+    container.innerHTML = '';
+    container.appendChild(card);
+  }
+
+  function renderMetricDashboardConfig(config) {
+    var container = document.getElementById(config.containerId);
+
+    if (!container) {
+      return Promise.resolve();
+    }
+
+    var fetches = config.metrics.map(function(metric) {
+      return fetchCsv(metric.csv).then(function(rows) {
+        return {
+          key: metric.key,
+          rows: rows
+        };
+      });
+    });
+
+    return Promise.all(fetches).then(function(results) {
+      var metricRowsByKey = {};
+      var runs;
+
+      results.forEach(function(result) {
+        metricRowsByKey[result.key] = result.rows;
+      });
+
+      runs = buildDashboardRuns(config, metricRowsByKey);
+      renderMetricDashboard(container, config, runs);
+    }).catch(function(error) {
+      console.error(error);
+      container.innerHTML = '';
+      var errorMessage = document.createElement('div');
+      errorMessage.className = 'experiment-status experiment-error';
+      errorMessage.textContent = error.message;
+      container.appendChild(errorMessage);
+    });
+  }
+
+  function initializeMetricDashboards() {
+    return Promise.all(METRIC_DASHBOARDS.map(renderMetricDashboardConfig));
+  }
+
+  function buildSingleMetricRows(config, rows) {
+    var metric = {
+      key: 'value',
+      direction: config.direction
+    };
+    var baselineValue = null;
+    var rankedRows = config.runs.map(function(run) {
+      var value = metricValueForRun(rows, run.key, config.metric);
+
+      if (run.key === config.baselineRunKey) {
+        baselineValue = value;
+      }
+
+      return {
+        key: run.key,
+        label: run.label,
+        color: run.color,
+        value: value,
+        metrics: {
+          value: value
+        }
+      };
+    });
+
+    rankedRows.sort(function(a, b) {
+      if (a.value === null || a.value === undefined) {
+        return 1;
+      }
+
+      if (b.value === null || b.value === undefined) {
+        return -1;
+      }
+
+      return config.direction === 'lower' ? a.value - b.value : b.value - a.value;
+    });
+
+    return rankedRows.map(function(row) {
+      row.deltaFromBaseline = baselineValue === null || baselineValue === undefined || row.value === null || row.value === undefined
+        ? null
+        : row.value - baselineValue;
+      row.isBest = isBestMetricValue(row.value, rankedRows, metric);
+      return row;
+    });
+  }
+
+  function formatDelta(value, config) {
+    if (value === null || value === undefined || Math.abs(value) < 1e-10) {
+      return 'baseline';
+    }
+
+    var sign = value > 0 ? '+' : '-';
+    return sign + Math.abs(value).toFixed(config.digits) + ' ' + config.unit + ' vs baseline';
+  }
+
+  function createSingleMetricRow(row, extent, config) {
+    var item = document.createElement('div');
+    var label = document.createElement('div');
+    var marker = document.createElement('span');
+    var name = document.createElement('span');
+    var plot = document.createElement('div');
+    var axis = document.createElement('div');
+    var stem = document.createElement('span');
+    var dot = document.createElement('span');
+    var value = document.createElement('span');
+    var delta = document.createElement('span');
+    var position = metricPosition(row.value, extent);
+    var formattedValue = formatDashboardValue(row.value, config);
+
+    item.className = 'single-metric-row';
+    label.className = 'single-metric-label';
+    marker.className = 'metric-dashboard-run-marker';
+    name.className = 'single-metric-name';
+    plot.className = 'single-metric-plot';
+    axis.className = 'single-metric-axis';
+    stem.className = 'single-metric-stem';
+    dot.className = 'metric-dashboard-dot' + (row.isBest ? ' is-best' : '');
+    value.className = 'single-metric-value';
+    delta.className = 'single-metric-delta';
+
+    marker.style.backgroundColor = row.color;
+    name.textContent = row.label;
+    stem.style.width = position + '%';
+    dot.style.left = position + '%';
+    dot.style.backgroundColor = row.color;
+    value.style.left = position + '%';
+    value.textContent = formattedValue;
+    delta.textContent = formatDelta(row.deltaFromBaseline, config);
+    dot.title = row.label + ': ' + config.label + ' ' + formattedValue;
+
+    if (position < 8) {
+      value.className += ' is-left-edge';
+    } else if (position > 92) {
+      value.className += ' is-right-edge';
+    }
+
+    if (row.deltaFromBaseline === null || row.deltaFromBaseline === undefined || Math.abs(row.deltaFromBaseline) < 1e-10) {
+      delta.className += ' is-baseline';
+    } else if (
+      (config.direction === 'lower' && row.deltaFromBaseline < 0) ||
+      (config.direction === 'higher' && row.deltaFromBaseline > 0)
+    ) {
+      delta.className += ' is-better';
+    } else {
+      delta.className += ' is-worse';
+    }
+
+    label.appendChild(marker);
+    label.appendChild(name);
+    plot.appendChild(axis);
+    plot.appendChild(stem);
+    plot.appendChild(dot);
+    plot.appendChild(value);
+    item.appendChild(label);
+    item.appendChild(plot);
+    item.appendChild(delta);
+
+    return item;
+  }
+
+  function renderSingleMetricDashboard(container, config, rows) {
+    var card = document.createElement('article');
+    var header = document.createElement('div');
+    var eyebrow = document.createElement('div');
+    var title = document.createElement('h4');
+    var description = document.createElement('p');
+    var body = document.createElement('div');
+    var axisHint = document.createElement('div');
+    var metric = {
+      key: 'value',
+      direction: config.direction
+    };
+    var extent = getMetricExtent(rows, metric);
+
+    card.className = 'metric-dashboard-card single-metric-card';
+    header.className = 'metric-dashboard-card-header';
+    eyebrow.className = 'metric-dashboard-eyebrow';
+    title.className = 'title is-5';
+    description.className = 'metric-dashboard-description';
+    body.className = 'single-metric-body';
+    axisHint.className = 'single-metric-axis-hint';
+
+    eyebrow.textContent = config.eyebrow;
+    title.textContent = config.title;
+    description.textContent = config.description;
+    axisHint.textContent = config.label + ' (' + config.unit + '), ' +
+      (config.direction === 'lower' ? 'lower is better' : 'higher is better');
+
+    header.appendChild(eyebrow);
+    header.appendChild(title);
+    header.appendChild(description);
+    body.appendChild(axisHint);
+
+    rows.forEach(function(row) {
+      body.appendChild(createSingleMetricRow(row, extent, config));
+    });
+
+    card.appendChild(header);
+    card.appendChild(body);
+
+    container.innerHTML = '';
+    container.appendChild(card);
+  }
+
+  function renderSingleMetricDashboardConfig(config) {
+    var container = document.getElementById(config.containerId);
+
+    if (!container) {
+      return Promise.resolve();
+    }
+
+    return fetchCsv(config.csv).then(function(rows) {
+      renderSingleMetricDashboard(container, config, buildSingleMetricRows(config, rows));
+    }).catch(function(error) {
+      console.error(error);
+      container.innerHTML = '';
+      var errorMessage = document.createElement('div');
+      errorMessage.className = 'experiment-status experiment-error';
+      errorMessage.textContent = error.message;
+      container.appendChild(errorMessage);
+    });
+  }
+
+  function initializeSingleMetricDashboards() {
+    return Promise.all(SINGLE_METRIC_DASHBOARDS.map(renderSingleMetricDashboardConfig));
+  }
+
   function renderExperiment(dashboard, experiment) {
     var shell = createExperimentShell(experiment);
     dashboard.appendChild(shell.card);
@@ -535,7 +1066,13 @@
   }
 
   var sectionsReady = window.sectionsReady || Promise.resolve();
-  sectionsReady.then(initializeExperimentPlots).catch(function(error) {
+  sectionsReady.then(function() {
+    return Promise.all([
+      initializeSingleMetricDashboards(),
+      initializeMetricDashboards(),
+      initializeExperimentPlots()
+    ]);
+  }).catch(function(error) {
     console.error('Experiment section failed to initialize.', error);
   });
 })();

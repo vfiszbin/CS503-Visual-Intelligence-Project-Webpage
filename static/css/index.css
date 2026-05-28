@@ -160,6 +160,283 @@ body {
   margin-top: 1rem;
 }
 
+.metric-dashboard-host {
+  margin-top: 1rem;
+}
+
+.single-metric-dashboard-host {
+  margin-top: 1rem;
+}
+
+.metric-dashboard-card {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.metric-dashboard-card-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1rem 0.85rem;
+}
+
+.metric-dashboard-card-header .title {
+  margin-bottom: 0.35rem;
+}
+
+.metric-dashboard-eyebrow {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.metric-dashboard-description {
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+.metric-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(11rem, 1.1fr) repeat(var(--metric-count), minmax(9.5rem, 1fr));
+  overflow-x: auto;
+}
+
+.metric-dashboard-grid > * {
+  min-width: 0;
+}
+
+.metric-dashboard-run-header,
+.metric-dashboard-header-cell {
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  color: #1f2937;
+  padding: 0.65rem 0.8rem;
+}
+
+.metric-dashboard-run-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.metric-dashboard-metric-label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metric-dashboard-metric-hint {
+  color: #64748b;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  margin-top: 0.15rem;
+}
+
+.metric-dashboard-run,
+.metric-dashboard-cell {
+  border-bottom: 1px solid #edf0f5;
+  min-height: 3.8rem;
+  padding: 0.7rem 0.8rem;
+}
+
+.metric-dashboard-run {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+}
+
+.metric-dashboard-run-marker {
+  border-radius: 999px;
+  flex: 0 0 auto;
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+.metric-dashboard-run-text {
+  min-width: 0;
+}
+
+.metric-dashboard-run-name {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metric-dashboard-track {
+  height: 2.2rem;
+  position: relative;
+}
+
+.metric-dashboard-axis {
+  background: linear-gradient(90deg, #e5e7eb, #cbd5e1);
+  border-radius: 999px;
+  height: 0.22rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 1.1rem;
+}
+
+.metric-dashboard-axis::after {
+  color: #94a3b8;
+  content: "";
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+  position: absolute;
+  right: 0;
+  text-transform: uppercase;
+  top: -1rem;
+}
+
+.metric-dashboard-dot {
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+  height: 0.82rem;
+  position: absolute;
+  top: 0.79rem;
+  transform: translateX(-50%);
+  width: 0.82rem;
+  z-index: 2;
+}
+
+.metric-dashboard-dot.is-best {
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.14), 0 1px 4px rgba(15, 23, 42, 0.25);
+}
+
+.metric-dashboard-value {
+  color: #111827;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1;
+  position: absolute;
+  top: 1.78rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.metric-dashboard-value.is-left-edge {
+  transform: translateX(0);
+}
+
+.metric-dashboard-value.is-right-edge {
+  transform: translateX(-100%);
+}
+
+.single-metric-body {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.single-metric-axis-hint {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.55rem;
+  text-transform: uppercase;
+}
+
+.single-metric-row {
+  align-items: center;
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(11rem, 0.9fr) minmax(13rem, 1.5fr) minmax(9rem, 0.8fr);
+  min-height: 3.75rem;
+}
+
+.single-metric-row:not(:last-child) {
+  border-bottom: 1px solid #edf0f5;
+}
+
+.single-metric-label {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.single-metric-name {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.single-metric-plot {
+  height: 2.35rem;
+  position: relative;
+}
+
+.single-metric-axis {
+  background: #e5e7eb;
+  border-radius: 999px;
+  height: 0.22rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 1.1rem;
+}
+
+.single-metric-stem {
+  background: #cbd5e1;
+  border-radius: 999px;
+  height: 0.22rem;
+  left: 0;
+  position: absolute;
+  top: 1.1rem;
+}
+
+.single-metric-value {
+  color: #111827;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1;
+  position: absolute;
+  top: 1.82rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.single-metric-value.is-left-edge {
+  transform: translateX(0);
+}
+
+.single-metric-value.is-right-edge {
+  transform: translateX(-100%);
+}
+
+.single-metric-delta {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: right;
+}
+
+.single-metric-delta.is-baseline {
+  color: #64748b;
+}
+
+.single-metric-delta.is-better {
+  color: #047857;
+}
+
+.single-metric-delta.is-worse {
+  color: #b45309;
+}
+
+.experiment-curves-title {
+  margin-top: 2rem;
+}
+
 .experiment-card {
   border: 1px solid #d9dee8;
   border-radius: 8px;
@@ -364,6 +641,35 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+  .metric-dashboard-grid {
+    grid-template-columns: minmax(10rem, 0.95fr) repeat(var(--metric-count), minmax(8.75rem, 1fr));
+  }
+
+  .metric-dashboard-card-header {
+    padding: 0.9rem;
+  }
+
+  .metric-dashboard-run,
+  .metric-dashboard-cell {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .single-metric-body {
+    padding: 0.75rem;
+  }
+
+  .single-metric-row {
+    align-items: stretch;
+    gap: 0.25rem;
+    grid-template-columns: 1fr;
+    padding: 0.65rem 0;
+  }
+
+  .single-metric-delta {
+    text-align: left;
+  }
+
   .experiment-card {
     padding: 0.75rem;
   }
