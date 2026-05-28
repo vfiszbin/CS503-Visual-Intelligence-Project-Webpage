@@ -181,7 +181,7 @@
       eyebrow: 'Test split median localization error',
       description: 'Comparison of image-only inference against free-form and structured textual caption conditioning.',
       csv: './static/data/caption_conditioning/test_mode_median_km.csv',
-      metric: 'eval/test/mode_median_km',
+      metric: 'eval/test/mode_median_km__MIN',
       label: 'Median error',
       unit: 'km',
       digits: 1,
