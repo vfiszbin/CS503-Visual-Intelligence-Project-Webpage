@@ -27,6 +27,39 @@
             As shown in the architecture diagram, the image and text embeddings are concatenated before being projected into the flow matching conditioning space.
             We experimented with several captioning strategies using Qwen3-VL and Gemma4 models. The captions ranged from short free-form geolocation cues to more structured descriptions containing attributes such as terrain, vegetation, road markings, visible script, and infrastructure.
           </p>
+        </div>
+
+        <figure class="caption-example-panel">
+          <div class="caption-example-image">
+            <h4>Input image</h4>
+            <img
+              src="./static/images/osv5m_sample1.png"
+              alt="Street-view sample showing a paved mountain road, hillside houses, and snowy mountains."
+            />
+          </div>
+          <div class="caption-example-list">
+            <section class="caption-example-item caption-example-free">
+              <h4>Free-form caption</h4>
+              <p>
+                curved paved road; dashed white center line; grassy hillside; scattered alpine houses; snow-covered mountains; valley settlement; temperate rural landscape; clear blue sky
+              </p>
+            </section>
+            <section class="caption-example-item caption-example-structured">
+              <h4>Structured caption full</h4>
+              <p>
+                scene type: rural; terrain: mountainous_hilly; vegetation: grass; road markings: dashed_center_line; road type: paved_local; visible script: none; road signs: none; infrastructure: sparse_houses; climate: temperate_alpine
+              </p>
+            </section>
+            <section class="caption-example-item caption-example-vqa">
+              <h4>Targeted VQA caption</h4>
+              <p>
+                dashed white center line; narrow paved local road; paved shoulder absent; grassy alpine hillside; snow-covered mountains; scattered detached houses; european roadside bollards; valley settlement visible; utility poles absent; visible text none
+              </p>
+            </section>
+          </div>
+        </figure>
+
+        <div class="content has-text-justified">
           <p>
             We also tested multiple ablations:
           </p>
