@@ -183,7 +183,8 @@ body {
 }
 
 .experiment-architecture-figure figcaption,
-.caption-example-panel figcaption {
+.caption-example-panel figcaption,
+.rfm-comparison-figure figcaption {
   color: #64748b;
   font-size: 0.82rem;
   line-height: 1.35;
@@ -254,6 +255,55 @@ body {
 
 .caption-example-vqa {
   border-left-color: #d97706;
+}
+
+.rfm-comparison-figure {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  margin: 0.75rem 0 1rem;
+  padding: 1rem;
+}
+
+.rfm-comparison-row {
+  align-items: center;
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.rfm-comparison-row:not(:last-of-type) {
+  border-bottom: 1px solid #edf0f5;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+
+.rfm-comparison-label {
+  color: #334155;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.rfm-comparison-panel {
+  min-width: 0;
+}
+
+.rfm-comparison-panel h4 {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 0.45rem;
+}
+
+.rfm-comparison-panel img {
+  background: #f8fafc;
+  border: 1px solid #edf0f5;
+  display: block;
+  height: auto;
+  width: 100%;
 }
 
 .metric-dashboard-card {
@@ -761,6 +811,19 @@ body {
   .caption-example-panel {
     grid-template-columns: 1fr;
     padding: 0.75rem;
+  }
+
+  .rfm-comparison-figure {
+    padding: 0.75rem;
+  }
+
+  .rfm-comparison-row {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .rfm-comparison-label {
+    text-align: left;
   }
 
   .experiment-card {

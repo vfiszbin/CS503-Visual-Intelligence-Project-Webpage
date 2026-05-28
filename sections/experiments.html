@@ -123,6 +123,75 @@
           </p>
         </div>
 
+        <h3 class="title is-4">From global spherical $S^2$ to local planar Euclidean $R^2$ flow matching</h3>
+        <div class="content has-text-justified">
+          <p>
+            The biggest breakthrough came from replacing the original spherical flow matching formulation with a local planar Euclidean one.
+            The original paper performs flow matching on the full Earth sphere ($S^2$) <a href="#ref8">[8]</a>. However, our task is restricted to Switzerland only, where Earth curvature is negligible at this scale.
+            We therefore replaced the Riemannian spherical formulation with a standard Euclidean flow matching model operating on a local ($R^2$) plane.
+          </p>
+          <p>
+            This change greatly simplified the geometry of the prediction space and produced significantly sharper spatial distributions.
+          </p>
+        </div>
+
+        <figure class="rfm-comparison-figure">
+          <div class="rfm-comparison-row">
+            <div class="rfm-comparison-label">$S^2$</div>
+            <div class="rfm-comparison-panel">
+              <h4>Global flow trajectory</h4>
+              <img
+                src="./static/images/rfm_vs_euclidian_fm/plonk_rfm_s2_image_only_seed42_test_346061630183932_flow.gif"
+                alt="Spherical flow matching trajectory over the full world map."
+              />
+            </div>
+            <div class="rfm-comparison-panel">
+              <h4>Switzerland distribution</h4>
+              <img
+                src="./static/images/rfm_vs_euclidian_fm/plonk_rfm_s2_image_only_seed42_test_346061630183932_switzerland_distribution.png"
+                alt="Spherical flow matching prediction distribution over Switzerland."
+              />
+            </div>
+          </div>
+          <div class="rfm-comparison-row">
+            <div class="rfm-comparison-label">$R^2$</div>
+            <div class="rfm-comparison-panel">
+              <h4>Local flow trajectory</h4>
+              <img
+                src="./static/images/rfm_vs_euclidian_fm/plonk_local_fm_r2_image_only_seed42_test_346061630183932_flow.gif"
+                alt="Local Euclidean flow matching trajectory over Switzerland."
+              />
+            </div>
+            <div class="rfm-comparison-panel">
+              <h4>Switzerland distribution</h4>
+              <img
+                src="./static/images/rfm_vs_euclidian_fm/plonk_local_fm_r2_image_only_seed42_test_346061630183932_switzerland_distribution.png"
+                alt="Local Euclidean flow matching prediction distribution over Switzerland."
+              />
+            </div>
+          </div>
+          <figcaption>
+            Comparison between the global spherical and the local Euclidean formulation on the same test example.
+          </figcaption>
+        </figure>
+
+        <div class="content has-text-justified">
+          <p>
+            As shown in the figure above, the spherical ($S^2$) formulation tends to spread probability mass over a much larger area, while the local ($R^2$) formulation concentrates predictions much closer to the ground-truth location.
+            Quantitatively, the local Euclidean model improves all main metrics.
+          </p>
+        </div>
+
+        <div id="euclidian-fm-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading Euclidean flow matching results...</div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            The entropy reduction is important: beyond improving localization accuracy, the ($R^2$) formulation also produces much more confident and spatially concentrated predictions.
+          </p>
+        </div>
+
 
           <h3 class="title is-4">Classifier Probability Conditioning</h3>
           <div id="classifier-conditioning-dashboard" class="metric-dashboard-host" aria-live="polite">

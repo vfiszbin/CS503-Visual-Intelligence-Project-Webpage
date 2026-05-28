@@ -120,6 +120,54 @@
 
   var METRIC_DASHBOARDS = [
     {
+      containerId: 'euclidian-fm-dashboard',
+      title: 'Spherical vs local Euclidean flow matching',
+      eyebrow: 'Test split summary',
+      description: 'Comparison of the original global S2 formulation against the local R2 formulation used for Switzerland.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/rfm_vs_euclidian_fm/test_mode_median_km.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'cantonAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/rfm_vs_euclidian_fm/test_canton_accuracy.csv',
+          wandbMetric: 'test/mode/admin_accuracy/canton'
+        },
+        {
+          key: 'entropy',
+          label: 'Mean entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          csv: './static/data/rfm_vs_euclidian_fm/test_mean_entropy.csv',
+          wandbMetric: 'test/uncertainty/mean_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'spherical_fm_s2',
+          label: 'S2 Riemannian FM',
+          color: '#2563eb'
+        },
+        {
+          key: 'local_fm_r2',
+          label: 'R2 Euclidean FM',
+          color: '#f59e0b'
+        }
+      ]
+    },
+    {
       containerId: 'classifier-conditioning-dashboard',
       title: 'Classifier probability conditioning',
       eyebrow: 'Test split summary',
