@@ -6,10 +6,52 @@
       <div class="column is-full-width">
         <h2 class="title is-3" id="experiments">IV. Experiments</h2>
 
-          <h3 class="title is-4">Textual caption conditioning</h3>
-          <div id="caption-conditioning-summary" class="single-metric-dashboard-host" aria-live="polite">
-            <div class="experiment-status">Loading caption conditioning results...</div>
-          </div>
+        <h3 class="title is-4">Textual caption conditioning</h3>
+        <div class="content has-text-justified">
+          <p>
+            We explored whether adding a textual caption conditioning could improve the flow matching geolocation model.
+            The original Riemannian Flow Matching architecture conditions only on StreetCLIP image embeddings <a href="#ref8">[8]</a>.
+            We extended this setup by adding a second conditioning branch based on automatically generated image captions.
+          </p>
+        </div>
+
+        <figure class="experiment-architecture-figure">
+          <img
+            src="./static/images/model_architecture/fm_architecture_img+caption.svg"
+            alt="Flow matching architecture with image and caption conditioning."
+          />
+        </figure>
+
+        <div class="content has-text-justified">
+          <p>
+            As shown in the architecture diagram, the image and text embeddings are concatenated before being projected into the flow matching conditioning space.
+            We experimented with several captioning strategies using Qwen3-VL and Gemma4 models. The captions ranged from short free-form geolocation cues to more structured descriptions containing attributes such as terrain, vegetation, road markings, visible script, and infrastructure.
+          </p>
+          <p>
+            We also tested multiple ablations:
+          </p>
+          <ul>
+            <li>image + text conditioning</li>
+            <li>text-only conditioning</li>
+            <li>single-field structured captions</li>
+            <li>targeted VQA-style captions generated from explicit geolocation-related questions</li>
+          </ul>
+          <p>
+            The figure below reports the median localization error on the test split. Lower is better.
+          </p>
+        </div>
+
+        <div id="caption-conditioning-summary" class="single-metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading caption conditioning results...</div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            We observed that caption quality and prompting strategy clearly affect performance.
+            However, none of the caption-conditioned variants outperform the image-only baseline. We believe this is because the captions are generated from the same input image already used by the visual encoder, and therefore bring limited additional information.
+            As a result, we did not pursue caption conditioning further.
+          </p>
+        </div>
 
 
           <h3 class="title is-4">Classifier Probability Conditioning</h3>
