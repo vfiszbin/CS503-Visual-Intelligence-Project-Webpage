@@ -8,7 +8,7 @@
         <h3 class="title is-4">Deterministic Baseline Model</h3>
         <div class="content has-text-justified">
           <p>
-            For a geolocalization task, the most naive baseline model is using a deterministic regression model with the following architecture:
+            For the geolocalization task, the simplest baseline is a deterministic regression model, which we use as the baseline in this project. The following figure illustrates the architecture.
           </p>
         </div>
 
@@ -39,6 +39,24 @@
           </ul>
           <p>
             Therefore, a probabilistic model is preferred in our project.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Flow Matching Model</h3>
+        
+        <figure class="experiment-architecture-figure">
+          <img
+            src="./static/images/model_architecture/fm_architecture_img.svg"
+            alt="Flow Matching architecture with image-only features."
+          />
+          <figcaption>
+            Flow matching architecture with image conditioning.
+          </figcaption>
+        </figure>
+
+        <div class="content has-text-justified">
+          <p>
+            The figure above illustrates the architecture using image-only features as input. We adopt the CLS token from the StreetCLIP image encoder as the visual representation. Because StreetCLIP is further trained on street-view data, it is more effective for image geolocation tasks. After feature extraction, a condition projection module, implemented as a LayerNorm followed by a linear layer, reduces the original 1024-dimensional feature to 512 dimensions. The resulting condition feature is then passed to a Euclidean Flow Matching model defined on a regional $R^2$ plane. The model initializes $n$ random points on the map and learns trajectories that progressively converge to a stable region. Based on these generated samples, we construct a heatmap and select the sample with the highest density score as the final latitude and longitude prediction.
           </p>
         </div>
       </div>
