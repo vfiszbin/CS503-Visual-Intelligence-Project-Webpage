@@ -3,7 +3,7 @@
     {
       id: 'augmentation-level',
       title: 'Augmentation level',
-      description: 'Validation median distance across training epochs for image-only augmentation settings. Lower is better.',
+      description: 'In our research, we observed that images from the Switzerland region tend to have high visual similarity, which motivated us to explore image augmentation as a means to increase variance and improve the model\'s ability to distinguish between different regions. To systematically evaluate this, we conducted a robustness experiment examining the necessity of augmentation and the appropriate level of aggressiveness (conservative vs. aggressive). However, our experiments revealed that more aggressive augmentation actually hurts final performance. A likely explanation is that heavily augmented images fall outside StreetCLIP\'s familiar input distribution, causing its feature outputs to become distorted and degrading the originally strong feature representations.',
       trainCsv: './data/augmentation-level/train_flow_loss.csv',
       validationCsv: './data/augmentation-level/validate_mode_error_distance.csv',
       testCsv: './data/augmentation-level/test_mode_error_distance.csv',
@@ -35,7 +35,7 @@
     {
       id: 'augmentation-views',
       title: 'Augmentation views for a single image',
-      description: 'Validation median distance across training epochs for conservative augmentation view counts. Lower is better.',
+      description: 'Another question we try to solve is to find out the optimal number of augmented views to generate. Results showed that using more views with a more conservative augmentation strategy is beneficial. However, this introduces a confound: more augmented views also means more compute. To isolate the true source of the gain, we designed a fixed-compute experiment where the total training budget — defined as (#views+1) &times; #epochs — was held constant across configurations.',
       trainCsv: './data/augmentation-views/train_flow_loss.csv',
       validationCsv: './data/augmentation-views/validate_mode_median_distance.csv',
       testCsv: './data/augmentation-views/test_mode_median_distance.csv',
@@ -77,7 +77,7 @@
     {
       id: 'augmentation-fixed-compute',
       title: 'Fixed-compute augmentation views',
-      description: 'Validation median distance across training epochs when view-count variants are compared with fixed compute. Lower is better.',
+      description: 'The fixed-compute results indicate that the performance gains do not stem from better generalization through augmentation, but rather from the additional compute itself. Specifically, training for more epochs with fewer augmented views consistently yielded better accuracy. Based on this finding, subsequent experiments use the original (non-augmented) data but with a significantly larger number of training epochs — for example, 100 epochs.',
       trainCsv: './data/augmentation-fixed-compute/train_flow_loss.csv',
       validationCsv: './data/augmentation-fixed-compute/validation_mode_median_distance.csv',
       testCsv: './data/augmentation-fixed-compute/test_mode_median_distance.csv',
@@ -473,7 +473,7 @@
 
     var description = document.createElement('p');
     description.className = 'experiment-description';
-    description.textContent = experiment.description;
+    description.innerHTML = experiment.description;
 
     header.appendChild(title);
     header.appendChild(description);

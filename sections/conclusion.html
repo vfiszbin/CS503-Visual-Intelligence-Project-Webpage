@@ -7,7 +7,10 @@
         <h2 class="title is-3" id="conclusion">V. Conclusion and Limitations</h2>
         <div class="content has-text-justified">
           <p>
-            The conclusion and limitations part of the report can be provided here
+            One of flow matching's most distinctive contributions to geolocalization is its ability to model full probability distributions over predictions — something deterministic models fundamentally cannot offer — enabling a more interpretable and nuanced understanding of model behavior. Apart from this, our experiments further reveal that critical design choices, including the selection of input features, the coordinate system employed, and the use of image augmentation, all have substantial impact on final performance. We hope these findings provide a meaningful foundation for future work seeking to advance the application of flow matching in geolocalization.
+          </p>
+          <p>
+            Nonetheless, this work has several limitations. Due to computational constraints, our experiments and validation were conducted solely on a Swiss subset; whether our architectural design remains effective on large-scale global datasets is an open question that warrants future investigation. Additionally, while we demonstrated that using classifier priors as conditioning signals improves the flow matching model, our experiments were limited to the canton level. At a global scale, a hierarchical conditioning scheme — first obtaining a country-level probability vector, then narrowing to the city level, and so on — may offer further gains. Whether such an approach can continue to improve model performance, and how classifier prior vectors fundamentally influence the behavior of the underlying flow matching model, remain open and compelling directions for future research.
           </p>
         </div>
       </div>
