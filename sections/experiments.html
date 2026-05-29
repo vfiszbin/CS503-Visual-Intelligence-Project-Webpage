@@ -319,6 +319,8 @@
           <p>
             For the local ($R^2$) formulation, the effect was different. Very small sampling windows were overly restrictive, while moderately larger windows improved localization accuracy. The best results were obtained with a circular window enlarged by a factor of 16. However, excessively large windows caused the flow to become strongly contractive, collapsing most samples to a single location and reducing uncertainty diversity.
 
+            To investigate whether the observed collapse was caused by insufficient sampling, we increased the number of inference particles from 64 to 512. The effect was negligible, suggesting that the collapse is driven by the learned flow rather than the sampling density.
+
             Although some enlarged-window variants achieved better results in isolation, subsequent experiments combining other improvements such as LayerNorm and optimal CFG rate ultimately showed that the standard rectangular sampling region remained the strongest overall configuration.
           </p>
         </div>
