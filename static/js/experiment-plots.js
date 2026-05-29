@@ -468,6 +468,94 @@
           color: '#14532d'
         }
       ]
+    },
+    {
+      containerId: 'combining-improvements-dashboard',
+      title: 'Combining improvements',
+      eyebrow: 'Test split summary',
+      description: 'Interaction between CFG, LayerNorm, and enlarged initial sampling regions.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/combining_improvements/test_mode_median_km.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'cantonAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/combining_improvements/test_region_accuracy.csv',
+          wandbMetric: 'test/mode/admin_accuracy/region'
+        },
+        {
+          key: 'entropy',
+          label: 'Mean entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          csv: './static/data/combining_improvements/test_mean_heatmap_entropy.csv',
+          wandbMetric: 'test/uncertainty/mean_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'plonk_local_fm_r2_image_only_seed42',
+          label: 'Baseline',
+          color: '#64748b'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_cfg_0_seed42',
+          label: 'CFG 0',
+          color: '#2563eb'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_seed42',
+          label: 'LayerNorm + CFG 0',
+          color: '#16a34a'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_32x_seed42',
+          label: 'Rect 32x',
+          color: '#93c5fd'
+        },
+        {
+          key: 'plonk_local_fm_r2_rectangle32x_cfg0_seed42',
+          label: 'Rect 32x + CFG 0',
+          color: '#3b82f6'
+        },
+        {
+          key: 'plonk_local_fm_r2_rectangle32x_layernorm_cfg0_seed42',
+          label: 'Rect 32x + LN + CFG 0',
+          color: '#1d4ed8'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_8x_seed42',
+          label: 'Circle 8x',
+          color: '#86efac'
+        },
+        {
+          key: 'plonk_local_fm_r2_circle8x_cfg0_seed42',
+          label: 'Circle 8x + CFG 0',
+          color: '#22c55e'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_16x_seed42',
+          label: 'Circle 16x',
+          color: '#fbbf24'
+        },
+        {
+          key: 'plonk_local_fm_r2_circle16x_layernorm_cfg0_seed42',
+          label: 'Circle 16x + LN + CFG 0',
+          color: '#f59e0b'
+        }
+      ]
     }
   ];
 

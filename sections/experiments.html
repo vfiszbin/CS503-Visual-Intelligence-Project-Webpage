@@ -325,6 +325,21 @@
           </p>
         </div>
 
+        <h3 class="title is-4">Combining Improvements</h3>
+        <div class="content has-text-justified">
+          <p>
+            The previous experiments identified several promising modifications: local ($R^2$) flow matching, pure conditional sampling ($\text{CFG}=0$), LayerNorm on the conditioning signal, and larger initial sampling regions.
+            However, improvements observed in isolation do not necessarily remain beneficial once combined with other changes.
+          </p>
+          <p>
+            We then evaluated a number of promising combinations inspired by the previous ablation studies. The goal was not to exhaustively test every possible configuration, but to determine which modifications remained beneficial when combined together. Interestingly, some improvements that looked promising in isolation, such as enlarged initial sampling regions, did not consistently improve the final model. The best overall results were obtained with LayerNorm and pure conditional sampling ($\text{CFG}=0$), which were therefore retained in the final configuration.
+          </p>
+        </div>
+
+        <div id="combining-improvements-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading combined improvement results...</div>
+        </div>
+
         <h3 class="title is-4 experiment-curves-title mt-5">Training Curves and Ablations</h3>
           <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
             <div class="experiment-status">Loading experiment results...</div>
