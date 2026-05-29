@@ -1,29 +1,28 @@
+<h1 align="center">Flow Matching for Probabilistic Image Geolocalization in Switzerland - Course Project Website</h1>
+
 <p align="center">
-  <img src="assets/epfl_logo.svg" alt="description" width="200">
+  <img src="assets/epfl_logo.svg" alt="description" width="100">
 </p>
-<h1 align="center">EPFL CS503 - Visual Intelligence<br>Machine and Minds <br>Course Project Website Template</h1>
+<p align="center">
+  <b>EPFL CS503 — Visual Intelligence, Spring 2026</b><p>
 
-This repository contains the template code for preparing final project reports using GitHub Page. 
+This repository contains the project website for *Flow Matching for Probabilistic Image Geolocalization in Switzerland*. The website is available at: https://vfiszbin.github.io/CS503-Visual-Intelligence-Project-Webpage/
 
-## Steps to Use the Template
-Follow the given steps to clone the repository to your local and publish on the website afterwards. 
+## Project Overview
 
-### 1 - Clone and Edit the Repository 
-```bash
-git clone https://github.com/EPFL-VILAB/cs503-project-webpage-template.git
-```
-After cloning the repository, make changes in the file `index.html` to modify your website as you wish. The parts that can be edited are labeled with following blocks: 
+Given a street view image, our goal is to predict its coordinates along with a **probability distribution** over possible locations. We focus on image geolocalization within Switzerland using a flow matching model.
 
-```html
-<!--TODO: CODE BLOCK DESCRIPTION-->
+**Key findings:**
+- Pure image features (StreetCLIP CLS token) outperform fused image+text features from VLM-generated captions.
+- A local Euclidean coordinate system (R²) is more appropriate than spherical coordinates (S²) for small geographic regions like Switzerland.
+- Using the output probability vector of a canton classifier as a conditioning signal further improves flow matching accuracy.
+
+The best flow matching model achieves a **test mode median error of ~15 km**, while additionally providing calibrated uncertainty estimates.
 
 
-<!-------------------------------->
-```
+## How to run locally?
 
-The `static` folder can be used for storing images, gifs, videos and other content that can be used in the report for reporting. 
-
-The page sections live in the `sections` folder and are loaded into `index.html` at runtime. When previewing locally, serve the repository with a local web server instead of opening `index.html` directly, for example:
+The page sections are loaded into `index.html` at runtime via `fetch()`. Serve it with a local web server:
 
 ```bash
 python3 -m http.server 8000
@@ -31,20 +30,91 @@ python3 -m http.server 8000
 
 Then open `http://localhost:8000`.
 
-After making the edits update the repository and commit your changes. 
+## File Hierarchy
 
-### 2 - Publish the Website on GitHub Pages
-The website can be published following the given steps: 
-
-1. Go to _Settings_ in of the repository and select _Pages_ under the group _Code and Automation_ from the left corner options. 
-
-2. Select the source as _Deploy from a branch_ 
-
-3. Wait for some time and you can see the first deployment following the provided link at your domain 🎉.
-
-4. Afterwards, your commits will update the website each time. 
-
-The website is available at the following link: https://vfiszbin.github.io/CS503-Visual-Intelligence-Project-Webpage/
+```
+.
+├── index.html                    # Page entry point; loads sections via fetch() at runtime
+├── README.md
+│
+├── sections/                     # HTML fragments injected by sections.js
+│   ├── hero.html                 # Title, author names, and external links
+│   ├── teaser.html               # Opening teaser visual
+│   ├── abstract-overview.html    # Abstract text and section navigation tiles
+│   ├── introduction.html         # Motivation, problem statement, OSV5M dataset
+│   ├── related-work.html         # Prior work: geolocalization, CLIP, flow matching
+│   ├── methodology.html          # MLP baseline and flow matching model architecture
+│   ├── experiments.html          # Experiment results and interactive dashboards
+│   ├── conclusion.html           # Conclusion and limitations
+│   ├── visual-items.html         # Qualitative result galleries
+│   ├── references.html           # Bibliography
+│   └── footer.html
+│
+├── static/
+│   ├── css/
+│   │   ├── index.css                   # Project-specific styles
+│   │   ├── bulma.min.css               # Bulma CSS framework (vendor)
+│   │   ├── bulma-carousel.min.css      # (vendor)
+│   │   ├── bulma-slider.min.css        # (vendor)
+│   │   └── fontawesome.all.min.css     # (vendor)
+│   │
+│   ├── js/
+│   │   ├── sections.js               # Fetches and injects section HTML at runtime
+│   │   ├── experiment-plots.js       # Plotly chart definitions for all experiment dashboards
+│   │   ├── canton-prediction-map.js  # Choropleth map of per-canton prediction accuracy
+│   │   ├── index.js                  # Tab navigation and misc UI interactions
+│   │   ├── bulma-carousel.min.js     # (vendor)
+│   │   ├── bulma-slider.min.js       # (vendor)
+│   │   └── fontawesome.all.min.js    # (vendor)
+│   │
+│   ├── data/
+│   │   ├── canton-predictions.json   # Per-sample model predictions grouped by canton
+│   │   │                             #   (generated by scripts/build_canton_prediction_data.py)
+│   │   ├── swiss-cantons.geojson     # Canton boundary polygons for the choropleth map
+│   │   ├── caption_conditioning/
+│   │   ├── cfg_rate/
+│   │   ├── classifier_probability_conditioning/
+│   │   ├── rfm_vs_euclidian_fm/
+│   │   └── sampling_shape_size/
+│   │       ├── R2/
+│   │       └── S2/
+│   │
+│   ├── images/
+│   │   ├── model_architecture/
+│   │   ├── rfm_vs_euclidian_fm/
+│   │   │   ├── plonk_local_fm_r2_*_flow.gif                  # R² flow trajectory animation
+│   │   │   ├── plonk_local_fm_r2_*_switzerland_distribution.png
+│   │   │   ├── plonk_rfm_s2_*_flow.gif                       # S² flow trajectory animation
+│   │   │   └── plonk_rfm_s2_*_switzerland_distribution.png
+│   │   ├── sampling_shape_size/
+│   │   │   └── plonk_rfm_s2_*_switzerland_flow.gif
+│   │   ├── thematic_switzerland/
+│   │   │   ├── fm_results/      # Flow matching qualitative results (city, countryside, railway, road, snow)
+│   │   │   └── mlp_results/     # MLP baseline qualitative results (city, countryside, road, snow)
+│   │   └── osv5m_sample1.png    # OSV5M dataset example image
+│   │
+│   ├── plotly/
+│   │   └── interactive_plot.html   # Standalone Plotly prototype (not loaded by main site)
+│   │
+│   ├── interpolation/stacked/      # 240 JPEG frames — template asset, unused by main site
+│   └── videos/                     # Template placeholder videos — unused by main site
+│
+├── data/                           # CSVs for experiment results
+│   ├── augmentation-fixed-compute/
+│   ├── augmentation-level/
+│   ├── augmentation-views/
+│   ├── baseline-classification/
+│   └── baseline-regression/
+│
+├── scripts/
+│   └── build_canton_prediction_data.py  # Builds canton-predictions.json from model predictions
+│
+├── tests/
+│   └── test_build_canton_prediction_data.py
+│
+└── assets/
+    └── epfl_logo.svg
+```
 
 ---
-This template has been taken from [here](https://nerfies.github.io).
+This template has been taken from [Nerfies](https://nerfies.github.io) via the [EPFL VILAB CS503 template](https://github.com/EPFL-VILAB/cs503-project-webpage-template).
