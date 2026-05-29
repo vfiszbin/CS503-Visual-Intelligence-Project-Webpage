@@ -197,40 +197,6 @@
       ]
     },
     {
-      containerId: 'baseline-classification-test-dashboard',
-      title: 'Canton classifier — test results',
-      eyebrow: 'Test split summary',
-      description: 'Final test loss and canton accuracy for the StreetCLIP + MLP classifier.',
-      metrics: [
-        {
-          key: 'testLoss',
-          label: 'Test loss',
-          unit: '',
-          digits: 3,
-          direction: 'lower',
-          csv: './data/baseline-classification/test_loss.csv',
-          wandbMetric: 'test_loss'
-        },
-        {
-          key: 'testAccuracy',
-          label: 'Canton accuracy',
-          unit: '%',
-          digits: 1,
-          multiplier: 100,
-          direction: 'higher',
-          csv: './data/baseline-classification/test_region_accuracy.csv',
-          wandbMetric: 'test/region_accuracy'
-        }
-      ],
-      runs: [
-        {
-          key: 'mlp_baseline',
-          label: 'StreetCLIP + MLP',
-          color: '#7c3aed'
-        }
-      ]
-    },
-    {
       containerId: 'euclidian-fm-dashboard',
       title: 'Spherical vs local Euclidean flow matching',
       eyebrow: 'Test split summary',
@@ -1047,7 +1013,7 @@
 
   function createExperimentShell(experiment) {
     var card = document.createElement('article');
-    card.className = 'experiment-card';
+    card.className = 'experiment-card' + (experiment.containerId ? ' is-standalone' : '');
 
     var header = document.createElement('div');
     header.className = 'experiment-card-header';
@@ -1165,10 +1131,6 @@
       tbody.appendChild(tr);
     });
 
-    var caption = document.createElement('caption');
-    caption.textContent = 'Last training flow loss plus final validation and test median distance.';
-
-    table.appendChild(caption);
     table.appendChild(thead);
     table.appendChild(tbody);
 

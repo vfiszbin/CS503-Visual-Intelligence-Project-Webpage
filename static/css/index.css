@@ -997,6 +997,13 @@ body {
   padding: 0;
 }
 
+.experiment-accordion-body .experiment-card.is-standalone {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
 .experiment-accordion-body .experiment-card:not(:last-child) {
   border-bottom: 1px solid #e5e7eb;
   margin-bottom: 1.1rem;
