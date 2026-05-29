@@ -9,38 +9,60 @@
         <h3 class="title is-4">Evaluation Metrics</h3>
         <div class="content has-text-justified">
           <p>
-            We evaluate the predicted geolocation distributions using several metrics. The experimental results reported in the following sections use the metrics defined below.
+            We evaluate the predicted geolocation distributions using several metrics. The experimental results reported
+            in the following sections use the metrics defined below.
           </p>
-          <p>
-            <strong>Mode median error</strong> measures the haversine distance between the ground-truth coordinates and the predicted mode of the sampled distribution. The mode is estimated as the sampled particle with the highest local kernel-density score.
-          </p>
-          <p>
-            For each sampled coordinate $i$, we compute:
-          </p>
-          $$
-          \mathrm{score}_i = \sum_j w_j \exp\left(-\frac{d(i,j)^2}{2h^2}\right)
-          $$
-          <p>
-            where $d(i,j)$ is the distance between samples, $h$ is a bandwidth parameter, and $w_j$ is the sample weight. In our current sampling setup, the sample weights are uniform. Samples in dense neighborhoods receive higher scores than isolated samples.
-          </p>
-          <p>
-            <strong>Heatmap entropy</strong> measures the spatial uncertainty of the predicted distribution. The sampled particles are binned into a latitude/longitude histogram, the histogram mass is normalized into probabilities, and Shannon entropy is computed:
-          </p>
-          $$
-          H(p) = -\sum_i p_i \log p_i
-          $$
-          <p>
-            Lower entropy indicates concentrated predictions, while higher entropy corresponds to more spatially spread predictions.
-          </p>
-          <p>
-            <strong>Canton administrative accuracy</strong> measures whether the predicted location falls inside the correct Swiss canton. For each predicted point, we reverse-geocode the coordinates using <code>reverse_geocoder</code> and compare the resulting <code>admin1</code> label against the dataset ground-truth canton label.
-          </p>
+          <ul>
+            <li>
+              <p>
+                <strong>Mode median error</strong> measures the haversine distance between the ground-truth coordinates
+                and the predicted mode of the sampled distribution. The mode is estimated as the sampled particle with
+                the highest local kernel-density score.
+              </p>
+              <p>
+                For each sampled coordinate $i$, we compute:
+              </p>
+              $$
+              \mathrm{score}_i = \sum_j w_j \exp\left(-\frac{d(i,j)^2}{2h^2}\right)
+              $$
+              <p>
+                where $d(i,j)$ is the distance between samples, $h$ is a bandwidth parameter, and $w_j$ is the sample
+                weight. In our current sampling setup, the sample weights are uniform. Samples in dense neighborhoods
+                receive higher scores than isolated samples.
+              </p>
+            </li>
+            <li>
+              <p>
+                <strong>Heatmap entropy</strong> measures the spatial uncertainty of the predicted distribution. The
+                sampled particles are binned into a latitude/longitude histogram, the histogram mass is normalized into
+                probabilities, and Shannon entropy is computed:
+              </p>
+              $$
+              H(p) = -\sum_i p_i \log p_i
+              $$
+              <p>
+                Lower entropy indicates concentrated predictions, while higher entropy corresponds to more spatially
+                spread predictions.
+              </p>
+            </li>
+            <li>
+              <p>
+                <strong>Canton administrative accuracy</strong> measures whether the predicted location falls inside the
+                correct Swiss canton. For each predicted point, we reverse-geocode the coordinates using
+                <code>reverse_geocoder</code> and compare the resulting <code>admin1</code> label against the dataset
+                ground-truth canton label.
+              </p>
+            </li>
+          </ul>
         </div>
 
         <h3 class="title is-4">Deterministic Baseline Results</h3>
         <div class="content has-text-justified">
           <p>
-            We first report an architecture search over MLP head configurations for the frozen StreetCLIP + MLP regression baseline. Each variant uses the same frozen StreetCLIP encoder; only the MLP head dimensions differ. The numbers in each label denote the hidden layer dimensions; the total number of layers is one more than the number of hidden layers (e.g., [768, 768, 768] denotes 3 hidden layers, 4 layers total). The best configuration — 3 hidden layers of dimension 768 — achieves a test median distance of 15.4 km and serves as the deterministic reference for all subsequent probabilistic experiments.
+            We report an architecture search over MLP head configurations for the frozen StreetCLIP + MLP regression
+            baseline. All variants share the same frozen StreetCLIP encoder; only the MLP head layers differ. The
+            best configuration, MLP [768, 768, 768], achieves a test median distance of 15.4 km and a canton accuracy
+            of 52.6%, and serves as the deterministic reference for all subsequent probabilistic experiments.
           </p>
         </div>
 
@@ -53,17 +75,18 @@
         <h4 class="title is-5">Textual caption conditioning</h4>
         <div class="content has-text-justified">
           <p>
-            We explored whether adding a textual caption conditioning could improve the flow matching geolocation model.
-            The original Riemannian Flow Matching architecture conditions only on StreetCLIP image embeddings <a href="#ref8">[8]</a>.
-            We extended this setup by adding a second conditioning branch based on automatically generated image captions.
+            We explored whether adding a textual caption conditioning could improve the flow matching geolocalization
+            model.
+            The original Riemannian Flow Matching architecture conditions only on StreetCLIP image embeddings <a
+              href="#ref8">[8]</a>.
+            We extended this setup by adding a second conditioning branch based on automatically generated image
+            captions.
           </p>
         </div>
 
         <figure class="experiment-architecture-figure">
-          <img
-            src="./static/images/model_architecture/fm_architecture_img+caption.svg"
-            alt="Flow matching architecture with image and caption conditioning."
-          />
+          <img src="./static/images/model_architecture/fm_architecture_img+caption.svg"
+            alt="Flow matching architecture with image and caption conditioning." />
           <figcaption>
             Flow matching architecture with image and caption conditioning.
           </figcaption>
@@ -71,36 +94,42 @@
 
         <div class="content has-text-justified">
           <p>
-            As shown in the architecture diagram, the image and text embeddings are concatenated before being projected into the flow matching conditioning space.
-            We experimented with several captioning strategies using Qwen3-VL and Gemma4 models. The captions ranged from short free-form geolocation cues to more structured descriptions containing attributes such as terrain, vegetation, road markings, visible script, and infrastructure.
+            As shown in the architecture diagram, the image and text embeddings are concatenated before being projected
+            into the flow matching conditioning space.
+            We experimented with several captioning strategies using Qwen3-VL and Gemma4 models. The captions ranged
+            from short free-form geolocation cues to more structured descriptions containing attributes such as terrain,
+            vegetation, road markings, visible script, and infrastructure.
           </p>
         </div>
 
         <figure class="caption-example-panel">
           <div class="caption-example-image">
             <h4>Input image</h4>
-            <img
-              src="./static/images/osv5m_sample1.png"
-              alt="Street-view sample showing a paved mountain road, hillside houses, and snowy mountains."
-            />
+            <img src="./static/images/osv5m_sample1.png"
+              alt="Street-view sample showing a paved mountain road, hillside houses, and snowy mountains." />
           </div>
           <div class="caption-example-list">
             <section class="caption-example-item caption-example-free">
               <h4>Free-form caption</h4>
               <p>
-                curved paved road; dashed white center line; grassy hillside; scattered alpine houses; snow-covered mountains; valley settlement; temperate rural landscape; clear blue sky
+                curved paved road; dashed white center line; grassy hillside; scattered alpine houses; snow-covered
+                mountains; valley settlement; temperate rural landscape; clear blue sky
               </p>
             </section>
             <section class="caption-example-item caption-example-structured">
               <h4>Structured caption full</h4>
               <p>
-                scene type: rural; terrain: mountainous_hilly; vegetation: grass; road markings: dashed_center_line; road type: paved_local; visible script: none; road signs: none; infrastructure: sparse_houses; climate: temperate_alpine
+                scene type: rural; terrain: mountainous_hilly; vegetation: grass; road markings: dashed_center_line;
+                road type: paved_local; visible script: none; road signs: none; infrastructure: sparse_houses; climate:
+                temperate_alpine
               </p>
             </section>
             <section class="caption-example-item caption-example-vqa">
               <h4>Targeted VQA caption</h4>
               <p>
-                dashed white center line; narrow paved local road; paved shoulder absent; grassy alpine hillside; snow-covered mountains; scattered detached houses; european roadside bollards; valley settlement visible; utility poles absent; visible text none
+                dashed white center line; narrow paved local road; paved shoulder absent; grassy alpine hillside;
+                snow-covered mountains; scattered detached houses; european roadside bollards; valley settlement
+                visible; utility poles absent; visible text none
               </p>
             </section>
           </div>
@@ -131,7 +160,9 @@
         <div class="content has-text-justified">
           <p>
             We observed that caption quality and prompting strategy clearly affect performance.
-            However, none of the caption-conditioned variants outperform the image-only baseline. We believe this is because the captions are generated from the same input image already used by the visual encoder, and therefore bring limited additional information.
+            However, none of the caption-conditioned variants outperform the image-only baseline. We believe this is
+            because the captions are generated from the same input image already used by the visual encoder, and
+            therefore bring limited additional information.
             As a result, we did not pursue caption conditioning further.
           </p>
         </div>
@@ -139,12 +170,16 @@
         <h4 class="title is-5">From global spherical $S^2$ to local planar Euclidean $R^2$ flow matching</h4>
         <div class="content has-text-justified">
           <p>
-            The biggest breakthrough came from replacing the original spherical flow matching formulation with a local planar Euclidean one.
-            The original paper performs flow matching on the full Earth sphere ($S^2$) <a href="#ref8">[8]</a>. However, our task is restricted to Switzerland only, where Earth curvature is negligible at this scale.
-            We therefore replaced the Riemannian spherical formulation with a standard Euclidean flow matching model operating on a local ($R^2$) plane.
+            The biggest breakthrough came from replacing the original spherical flow matching formulation with a local
+            planar Euclidean one.
+            The original paper performs flow matching on the full Earth sphere ($S^2$) <a href="#ref8">[8]</a>. However,
+            our task is restricted to Switzerland only, where Earth curvature is negligible at this scale.
+            We therefore replaced the Riemannian spherical formulation with a standard Euclidean flow matching model
+            operating on a local ($R^2$) plane.
           </p>
           <p>
-            This change greatly simplified the geometry of the prediction space and produced significantly sharper spatial distributions.
+            This change greatly simplified the geometry of the prediction space and produced significantly sharper
+            spatial distributions.
           </p>
         </div>
 
@@ -155,15 +190,13 @@
               <h4>Global flow trajectory</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_rfm_s2_image_only_seed42_test_346061630183932_flow.gif"
-                alt="Spherical flow matching trajectory over the full world map."
-              />
+                alt="Spherical flow matching trajectory over the full world map." />
             </div>
             <div class="rfm-comparison-panel">
               <h4>Switzerland distribution</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_rfm_s2_image_only_seed42_test_346061630183932_switzerland_distribution.png"
-                alt="Spherical flow matching prediction distribution over Switzerland."
-              />
+                alt="Spherical flow matching prediction distribution over Switzerland." />
             </div>
           </div>
           <div class="rfm-comparison-row">
@@ -172,15 +205,13 @@
               <h4>Local flow trajectory</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_local_fm_r2_image_only_seed42_test_346061630183932_flow.gif"
-                alt="Local Euclidean flow matching trajectory over Switzerland."
-              />
+                alt="Local Euclidean flow matching trajectory over Switzerland." />
             </div>
             <div class="rfm-comparison-panel">
               <h4>Switzerland distribution</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_local_fm_r2_image_only_seed42_test_346061630183932_switzerland_distribution.png"
-                alt="Local Euclidean flow matching prediction distribution over Switzerland."
-              />
+                alt="Local Euclidean flow matching prediction distribution over Switzerland." />
             </div>
           </div>
           <figcaption>
@@ -190,7 +221,9 @@
 
         <div class="content has-text-justified">
           <p>
-            As shown in the figure above, the spherical ($S^2$) formulation tends to spread probability mass over a much larger area, while the local ($R^2$) formulation concentrates predictions much closer to the ground-truth location.
+            As shown in the figure above, the spherical ($S^2$) formulation tends to spread probability mass over a much
+            larger area, while the local ($R^2$) formulation concentrates predictions much closer to the ground-truth
+            location.
             Quantitatively, the local Euclidean model improves all main metrics.
           </p>
         </div>
@@ -201,21 +234,27 @@
 
         <div class="content has-text-justified">
           <p>
-            The entropy reduction is important: beyond improving localization accuracy, the ($R^2$) formulation also produces much more confident and spatially concentrated predictions.
+            The entropy reduction is important: beyond improving localization accuracy, the ($R^2$) formulation also
+            produces much more confident and spatially concentrated predictions.
           </p>
         </div>
 
         <h4 class="title is-5">Conditioning flow matching with classifier priors</h4>
         <div class="content has-text-justified">
           <p>
-            We noticed that a simple canton classifier achieved higher canton-level accuracy than our flow matching model.
-            The classifier reached 69.74% canton accuracy, while the tuned ($R^2$) flow matching model<sup class="experiment-note-ref">1</sup> achieved 54.89%. This suggested that the classifier probabilities contained a strong coarse geographic signal that the flow model was not fully exploiting.
+            We noticed that a simple canton classifier achieved higher canton-level accuracy than our flow matching
+            model.
+            The classifier reached 69.74% canton accuracy, while the tuned ($R^2$) flow matching model<sup
+              class="experiment-note-ref">1</sup> achieved 54.89%. This suggested that the classifier probabilities
+            contained a strong coarse geographic signal that the flow model was not fully exploiting.
           </p>
           <p class="experiment-note">
             <sup>1</sup> Tuned $R^2$ model: CFG=0, LayerNorm, trained for 100 epochs.
           </p>
           <p>
-            We therefore used the classifier output probability distribution as an additional conditioning signal for flow matching. The 26-dimensional canton probability vector was concatenated with the image embedding before conditioning the flow matching model.
+            We therefore used the classifier output probability distribution as an additional conditioning signal for
+            flow matching. The 26-dimensional canton probability vector was concatenated with the image embedding before
+            conditioning the flow matching model.
           </p>
         </div>
 
@@ -224,10 +263,8 @@
         </div>
 
         <figure class="experiment-architecture-figure">
-          <img
-            src="./static/images/model_architecture/fm_architecture_img+probs_distrib.svg"
-            alt="Flow matching architecture with image embeddings and canton classifier probability conditioning."
-          />
+          <img src="./static/images/model_architecture/fm_architecture_img+probs_distrib.svg"
+            alt="Flow matching architecture with image embeddings and canton classifier probability conditioning." />
           <figcaption>
             Flow matching architecture with image embeddings and canton classifier probability conditioning.
           </figcaption>
@@ -250,12 +287,20 @@
 
         <div class="content has-text-justified">
           <p>
-            The classifier probabilities mainly act as a coarse regional prior. They narrow the plausible geographic area, while the flow matching model still handles the fine-grained localization within the canton.
-            The classifier prior improves overall performance, most specifically the canton accuracy, implying that the flow model could be leveraging the coarse regional signal from the classifier.
+            The classifier probabilities mainly act as a coarse regional prior. They narrow the plausible geographic
+            area, while the flow matching model still handles the fine-grained localization within the canton.
+            The classifier prior improves overall performance, most specifically the canton accuracy, implying that the
+            flow model could be leveraging the coarse regional signal from the classifier.
           </p>
 
           <p>
-            Interestingly, the classifier probabilities alone already give strong localization performance. One possible explanation is that, without image information, the flow model learns to place predictions in statistically "average" locations inside likely cantons, which already reduces the median distance significantly. In addition, the full canton probability distribution may contain much richer geographic information than a single predicted label, implicitly encoding neighboring regions and coarse spatial structure across Switzerland. For comparison, a flow matching model trained without any conditioning reaches a much worse median distance of 68.9 km.
+            Interestingly, the classifier probabilities alone already give strong localization performance. One possible
+            explanation is that, without image information, the flow model learns to place predictions in statistically
+            "average" locations inside likely cantons, which already reduces the median distance significantly. In
+            addition, the full canton probability distribution may contain much richer geographic information than a
+            single predicted label, implicitly encoding neighboring regions and coarse spatial structure across
+            Switzerland. For comparison, a flow matching model trained without any conditioning reaches a much worse
+            median distance of 68.9 km.
           </p>
         </div>
 
@@ -264,14 +309,19 @@
         <h4 class="title is-5">Initial sampling shape and size impact</h4>
         <div class="content has-text-justified">
           <p>
-            Flow Matching generates locations by transporting samples drawn from an initial distribution. We investigated how the shape and size of this initial sampling region affect localization performance and uncertainty.
+            Flow Matching generates locations by transporting samples drawn from an initial distribution. We
+            investigated how the shape and size of this initial sampling region affect localization performance and
+            uncertainty.
           </p>
         </div>
 
         <h5 class="title is-6">Spherical $S^2$ sampling</h5>
         <div class="content has-text-justified">
           <p>
-            For the original spherical ($S^2$) model, restricting both training and inference to a small region around Switzerland proved detrimental. The model learned almost zero target velocities, resulting in a degenerate flow that failed to transport samples correctly. In contrast, training on the full sphere while restricting inference to Switzerland remained effective and slightly benefited from circular sampling regions.
+            For the original spherical ($S^2$) model, restricting both training and inference to a small region around
+            Switzerland proved detrimental. The model learned almost zero target velocities, resulting in a degenerate
+            flow that failed to transport samples correctly. In contrast, training on the full sphere while restricting
+            inference to Switzerland remained effective and slightly benefited from circular sampling regions.
           </p>
         </div>
         <div id="sampling-shape-s2-dashboard" class="metric-dashboard-host" aria-live="polite">
@@ -281,16 +331,21 @@
         <h5 class="title is-6 mt-4">Local $R^2$ sampling</h5>
         <div class="content has-text-justified">
           <p>
-            For the local ($R^2$) formulation, the effect was different. Very small sampling windows were overly restrictive, while moderately larger windows improved localization accuracy. The best results were obtained with a circular window enlarged by a factor of 16. However, excessively large windows caused the flow to become strongly contractive, collapsing most samples to a single location and reducing uncertainty diversity.
+            For the local ($R^2$) formulation, the effect was different. Very small sampling windows were overly
+            restrictive, while moderately larger windows improved localization accuracy. The best results were obtained
+            with a circular window enlarged by a factor of 16. However, excessively large windows caused the flow to
+            become strongly contractive, collapsing most samples to a single location and reducing uncertainty
+            diversity.
 
-            Although some enlarged-window variants achieved better results in isolation, subsequent experiments combining other improvements such as LayerNorm and optimal CFG rate ultimately showed that the standard rectangular sampling region remained the strongest overall configuration.
+            Although some enlarged-window variants achieved better results in isolation, subsequent experiments
+            combining other improvements such as LayerNorm and optimal CFG rate ultimately showed that the standard
+            rectangular sampling region remained the strongest overall configuration.
           </p>
         </div>
         <figure class="experiment-architecture-figure sampling-collapse-figure">
           <img
             src="./static/images/sampling_shape_size/plonk_rfm_s2_image_only_switzerland_circle_seed42_test_346061630183932_switzerland_flow.gif"
-            alt="Flow trajectory showing particle collapse."
-          />
+            alt="Flow trajectory showing particle collapse." />
           <figcaption>
             Example of particle collapse when the flow becomes too contractive.
           </figcaption>
@@ -300,7 +355,9 @@
         </div>
         <div class="content has-text-justified">
           <p>
-            Overall, we see a trade-off between localization accuracy and uncertainty calibration: larger sampling regions can improve point estimates, but may also produce overconfident predictions by collapsing most samples to a single location.
+            Overall, we see a trade-off between localization accuracy and uncertainty calibration: larger sampling
+            regions can improve point estimates, but may also produce overconfident predictions by collapsing most
+            samples to a single location.
           </p>
         </div>
 
@@ -308,7 +365,8 @@
         <div class="content has-text-justified">
           <p>
             We evaluated different values of the classifier-free guidance (CFG) rate during inference.
-            CFG combines the conditional velocity predicted from the image with an unconditional velocity learned through condition dropout:
+            CFG combines the conditional velocity predicted from the image with an unconditional velocity learned
+            through condition dropout:
           </p>
           $$
           v_{\text{guided}}
@@ -329,8 +387,10 @@
             Here, $\lambda$ is the CFG rate.
           </p>
           <p>
-            The model conditioned on image features performs substantially better than the unconditioned version, confirming that images provide useful localization information.
-            However, increasing the CFG rate consistently degraded performance. The best results were obtained with $\lambda = 0$, corresponding to pure conditional sampling.
+            The model conditioned on image features performs substantially better than the unconditioned version,
+            confirming that images provide useful localization information.
+            However, increasing the CFG rate consistently degraded performance. The best results were obtained with
+            $\lambda = 0$, corresponding to pure conditional sampling.
           </p>
         </div>
 
@@ -340,22 +400,31 @@
 
         <div class="content has-text-justified">
           <p>
-            A possible explanation is that, in our local $R^2$ formulation, the prediction space is already restricted to Switzerland and the image-conditioned flow is already strong. Increasing CFG amplifies the image-conditioned correction, making particles move more aggressively at each step. As the CFG rate increases, the predicted distributions become more compact, but this apparent increase in confidence is not reflected in the accuracy metrics. Instead, we observe an overconfident collapse of the particle distribution and worse localization performance.
+            A possible explanation is that, in our local $R^2$ formulation, the prediction space is already restricted
+            to Switzerland and the image-conditioned flow is already strong. Increasing CFG amplifies the
+            image-conditioned correction, making particles move more aggressively at each step. As the CFG rate
+            increases, the predicted distributions become more compact, but this apparent increase in confidence is not
+            reflected in the accuracy metrics. Instead, we observe an overconfident collapse of the particle
+            distribution and worse localization performance.
           </p>
         </div>
 
         <h4 class="title is-5">Number of Particles</h4>
         <div class="content has-text-justified">
           <p>
-            To investigate whether the observed collapse was caused by insufficient sampling, we increased the number of inference particles from 64 to 512. The effect was negligible, suggesting that the collapse is driven by the learned flow rather than the sampling density.
+            To investigate whether the observed collapse was caused by insufficient sampling, we increased the number of
+            inference particles from 64 to 512. The effect was negligible, suggesting that the collapse is driven by the
+            learned flow rather than the sampling density.
           </p>
         </div>
 
         <h4 class="title is-5">Number of Flow Steps</h4>
         <div class="content has-text-justified">
           <p>
-            We evaluated the impact of the number of Euler integration steps at inference, ranging from 8 to 128 steps. Performance improves slightly between 8 and 16 steps, but quickly saturates afterwards.
-            Higher step counts provide little improvement in localization accuracy. Interestingly, increasing the number of steps tends to produce more spread-out prediction distributions, resulting in higher uncertainty.
+            We evaluated the impact of the number of Euler integration steps at inference, ranging from 8 to 128 steps.
+            Performance improves slightly between 8 and 16 steps, but quickly saturates afterwards.
+            Higher step counts provide little improvement in localization accuracy. Interestingly, increasing the number
+            of steps tends to produce more spread-out prediction distributions, resulting in higher uncertainty.
             We therefore found that 32 steps are already sufficient for this task.
           </p>
         </div>
@@ -365,18 +434,26 @@
         </div>
 
         <h4 class="title is-5 experiment-curves-title mt-5">Data Augmentations</h4>
-          <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
-            <div class="experiment-status">Loading experiment results...</div>
-          </div>
+        <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
+          <div class="experiment-status">Loading experiment results...</div>
+        </div>
 
         <h4 class="title is-5">Combining Improvements</h4>
         <div class="content has-text-justified">
           <p>
-            The previous experiments identified several promising modifications: local ($R^2$) flow matching, pure conditional sampling ($\text{CFG}=0$), LayerNorm on the conditioning signal, and larger initial sampling regions.
-            However, improvements observed in isolation do not necessarily remain beneficial once combined with other changes.
+            The previous experiments identified several promising modifications: local ($R^2$) flow matching, pure
+            conditional sampling ($\text{CFG}=0$), LayerNorm on the conditioning signal, and larger initial sampling
+            regions.
+            However, improvements observed in isolation do not necessarily remain beneficial once combined with other
+            changes.
           </p>
           <p>
-            We then evaluated a number of promising combinations inspired by the previous ablation studies. The goal was not to exhaustively test every possible configuration, but to determine which modifications remained beneficial when combined together. Interestingly, some improvements that looked promising in isolation, such as enlarged initial sampling regions, did not consistently improve the final model. The best overall results were obtained with LayerNorm and pure conditional sampling ($\text{CFG}=0$), which were therefore retained in the final configuration.
+            We then evaluated a number of promising combinations inspired by the previous ablation studies. The goal was
+            not to exhaustively test every possible configuration, but to determine which modifications remained
+            beneficial when combined together. Interestingly, some improvements that looked promising in isolation, such
+            as enlarged initial sampling regions, did not consistently improve the final model. The best overall results
+            were obtained with LayerNorm and pure conditional sampling ($\text{CFG}=0$), which were therefore retained
+            in the final configuration.
           </p>
         </div>
 
@@ -398,7 +475,9 @@
         <h4 class="title is-5 canton-map-section-title">Canton-Level Prediction Distribution</h4>
         <div class="content has-text-justified">
           <p>
-            We investigated whether the model's performance varies significantly across cantons. The results show that cantons with less training data coverage tend to have higher mean and median errors, which aligns with our expectations.
+            We investigated whether the model's performance varies significantly across cantons. The results show that
+            cantons with less training data coverage tend to have higher mean and median errors, which aligns with our
+            expectations.
           </p>
         </div>
         <div id="canton-prediction-dashboard" class="canton-prediction-dashboard" aria-live="polite">
@@ -408,7 +487,9 @@
         <h4 class="title is-5 mt-5">Thematic Switzerland Performance</h4>
         <div class="content has-text-justified">
           <p>
-            To better understand the strengths and weaknesses of the Flow Matching model, we analyzed its geolocation predictions across several themes. The tabs below present the input image collections alongside their corresponding predictions and ground truths.
+            To better understand the strengths and weaknesses of the Flow Matching model, we analyzed its geolocation
+            predictions across several themes. The tabs below present the input image collections alongside their
+            corresponding predictions and ground truths.
           </p>
         </div>
 
@@ -424,48 +505,64 @@
 
         <div id="tab-city" class="theme-tab-content has-text-centered">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/city_images.png" alt="City Photos" style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/city_images.png" alt="City Photos"
+              style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/city_switzerland_map.png" alt="City Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/city_switzerland_map.png"
+              alt="City Predictions Map">
           </figure>
         </div>
         <div id="tab-countryside" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/countryside_images.png" alt="Countryside Photos" style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/countryside_images.png" alt="Countryside Photos"
+              style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/countryside_switzerland_map.png" alt="Countryside Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/countryside_switzerland_map.png"
+              alt="Countryside Predictions Map">
           </figure>
         </div>
         <div id="tab-railway" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/railway_images.png" alt="Railway Photos" style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/railway_images.png" alt="Railway Photos"
+              style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/railway_switzerland_map.png" alt="Railway Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/railway_switzerland_map.png"
+              alt="Railway Predictions Map">
           </figure>
         </div>
         <div id="tab-road" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/road_images.png" alt="Road Photos" style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/road_images.png" alt="Road Photos"
+              style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/road_switzerland_map.png" alt="Road Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/road_switzerland_map.png"
+              alt="Road Predictions Map">
           </figure>
         </div>
         <div id="tab-snow" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/snow_view_images.png" alt="Snow Photos" style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/snow_view_images.png" alt="Snow Photos"
+              style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/snow_view_switzerland_map.png" alt="Snow Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/snow_view_switzerland_map.png"
+              alt="Snow Predictions Map">
           </figure>
         </div>
 
         <div class="content has-text-justified mt-5">
           <p>
-            After examining the model’s performance across different themes, we found that the frequency with which a scene appears in the training dataset is positively correlated with evaluation performance: scenes that appear more often tend to yield better results. As a result, road scenes perform the best, while railway scenes perform relatively worse because they occur less frequently in the training set. Surprisingly, predictions for snow views are highly accurate, possibly because snowy scenes are geographically concentrated in a limited number of characteristic locations, such as ski resorts and mountainous regions, making them easier for the model to localize.
+            After examining the model’s performance across different themes, we found that the frequency with which a
+            scene appears in the training dataset is positively correlated with evaluation performance: scenes that
+            appear more often tend to yield better results. As a result, road scenes perform the best, while railway
+            scenes perform relatively worse because they occur less frequently in the training set. Surprisingly,
+            predictions for snow views are highly accurate, possibly because snowy scenes are geographically
+            concentrated in a limited number of characteristic locations, such as ski resorts and mountainous regions,
+            making them easier for the model to localize.
           </p>
         </div>
       </div>

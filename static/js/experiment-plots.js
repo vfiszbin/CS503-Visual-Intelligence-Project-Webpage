@@ -1,39 +1,5 @@
-(function() {
+(function () {
   var EXPERIMENTS = [
-    {
-      id: 'baseline-regression',
-      containerId: 'baseline-regression-dashboard',
-      title: 'MLP regression architecture ablation',
-      description: 'Comparison of different MLP head architectures for the frozen StreetCLIP + MLP regression baseline. Each run uses the same frozen StreetCLIP encoder; only the MLP head dimensions differ.',
-      trainCsv: './data/baseline-regression/regression_train_loss.csv',
-      validationCsv: './data/baseline-regression/regression_val_median_distance.csv',
-      testCsv: './data/baseline-regression/regression_test_median_distance.csv',
-      trainXColumn: 'Step',
-      validationXColumn: 'Step',
-      trainMetric: 'train_loss',
-      validationMetric: 'val_median_distance_km',
-      testMetric: 'test_median_distance_km',
-      trainYAxisTitle: 'MSE loss',
-      validationYAxisTitle: 'Median distance (km)',
-      series: [
-        { key: 'target-coordinate_head-linear_lr-1e-3_epoch-50',          label: 'Linear',             color: '#dc2626' },
-        { key: 'target-coordinate_head-mlp256_lr-1e-3_epoch-50',           label: 'MLP [256]',          color: '#f97316' },
-        { key: 'target-coordinate_head-mlp512_lr-1e-3_epoch-50',           label: 'MLP [512]',          color: '#fb923c' },
-        { key: 'target-coordinate_head-mlp768_lr-1e-3_epoch-50',           label: 'MLP [768]',          color: '#fbbf24' },
-        { key: 'target-coordinate_head-mlp1024_lr-1e-3_epoch-50',          label: 'MLP [1024]',         color: '#facc15' },
-        { key: 'target-coordinate_head-mlp512-256_lr-1e-3_epoch-50',       label: 'MLP [512, 256]',     color: '#a3e635' },
-        { key: 'target-coordinate_head-mlp768-256_lr-1e-3_epoch-50',       label: 'MLP [768, 256]',     color: '#4ade80' },
-        { key: 'target-coordinate_head-mlp768-512_lr-1e-3_epoch-50',       label: 'MLP [768, 512]',     color: '#34d399' },
-        { key: 'target-coordinate_head-mlp768-768_lr-1e-3_epoch-50',       label: 'MLP [768, 768]',     color: '#2dd4bf' },
-        { key: 'target-coordinate_head-mlp1024-256_lr-1e-3_epoch-50',      label: 'MLP [1024, 256]',    color: '#22d3ee' },
-        { key: 'target-coordinate_head-mlp1024-512_lr-1e-3_epoch-50',      label: 'MLP [1024, 512]',    color: '#38bdf8' },
-        { key: 'target-coordinate_head-mlp1024-768_lr-1e-3_epoch-50',      label: 'MLP [1024, 768]',    color: '#60a5fa' },
-        { key: 'target-coordinate_head-mlp768-512-256_lr-1e-3_epoch-50',   label: 'MLP [768, 512, 256]',color: '#818cf8' },
-        { key: 'target-coordinate_head-mlp768-768-512_lr-1e-3_epoch-50',   label: 'MLP [768, 768, 512]',color: '#a78bfa' },
-        { key: 'target-coordinate_head-mlp768-768-768_lr-1e-3_epoch-50',   label: 'MLP [768, 768, 768]',color: '#c084fc' },
-        { key: 'target-coordinate_head-mlp1024-768-512_lr-1e-3_epoch-50',  label: 'MLP [1024, 768, 512]',color: '#e879f9' }
-      ]
-    },
     {
       id: 'baseline-classification',
       containerId: 'baseline-classification-dashboard',
@@ -176,6 +142,51 @@
   ];
 
   var METRIC_DASHBOARDS = [
+    {
+      containerId: 'baseline-regression-dashboard',
+      title: 'MLP regression architecture ablation',
+      eyebrow: 'Test split summary',
+      description: 'Test median distance (km) and canton accuracy across MLP head architectures. Labels denote the hidden layer dimensions (e.g., [768, 768, 768] = 3 hidden layers of width 768, with a total of 4 layers).',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './data/baseline-regression/regression_test_median_distance.csv',
+          wandbMetric: 'test_median_distance_km'
+        },
+        {
+          key: 'regionAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './data/baseline-regression/regression_test_region_accuracy.csv',
+          wandbMetric: 'test_region_accuracy'
+        }
+      ],
+      runs: [
+        { key: 'target-coordinate_head-linear_lr-1e-3_epoch-50', label: 'Linear', color: '#dc2626' },
+        { key: 'target-coordinate_head-mlp256_lr-1e-3_epoch-50', label: 'MLP [256]', color: '#f97316' },
+        { key: 'target-coordinate_head-mlp512_lr-1e-3_epoch-50', label: 'MLP [512]', color: '#fb923c' },
+        { key: 'target-coordinate_head-mlp768_lr-1e-3_epoch-50', label: 'MLP [768]', color: '#fbbf24' },
+        { key: 'target-coordinate_head-mlp1024_lr-1e-3_epoch-50', label: 'MLP [1024]', color: '#facc15' },
+        { key: 'target-coordinate_head-mlp512-256_lr-1e-3_epoch-50', label: 'MLP [512, 256]', color: '#a3e635' },
+        { key: 'target-coordinate_head-mlp768-256_lr-1e-3_epoch-50', label: 'MLP [768, 256]', color: '#4ade80' },
+        { key: 'target-coordinate_head-mlp768-512_lr-1e-3_epoch-50', label: 'MLP [768, 512]', color: '#34d399' },
+        { key: 'target-coordinate_head-mlp768-768_lr-1e-3_epoch-50', label: 'MLP [768, 768]', color: '#2dd4bf' },
+        { key: 'target-coordinate_head-mlp1024-256_lr-1e-3_epoch-50', label: 'MLP [1024, 256]', color: '#22d3ee' },
+        { key: 'target-coordinate_head-mlp1024-512_lr-1e-3_epoch-50', label: 'MLP [1024, 512]', color: '#38bdf8' },
+        { key: 'target-coordinate_head-mlp1024-768_lr-1e-3_epoch-50', label: 'MLP [1024, 768]', color: '#60a5fa' },
+        { key: 'target-coordinate_head-mlp768-512-256_lr-1e-3_epoch-50', label: 'MLP [768, 512, 256]', color: '#818cf8' },
+        { key: 'target-coordinate_head-mlp768-768-512_lr-1e-3_epoch-50', label: 'MLP [768, 768, 512]', color: '#a78bfa' },
+        { key: 'target-coordinate_head-mlp768-768-768_lr-1e-3_epoch-50', label: 'MLP [768, 768, 768]', color: '#c084fc' },
+        { key: 'target-coordinate_head-mlp1024-768-512_lr-1e-3_epoch-50', label: 'MLP [1024, 768, 512]', color: '#e879f9' }
+      ]
+    },
     {
       containerId: 'euclidian-fm-dashboard',
       title: 'Spherical vs local Euclidean flow matching',
@@ -801,7 +812,7 @@
           i += 1;
         }
         row.push(field);
-        if (row.some(function(value) { return value !== ''; })) {
+        if (row.some(function (value) { return value !== ''; })) {
           rows.push(row);
         }
         row = [];
@@ -813,7 +824,7 @@
 
     if (field !== '' || row.length > 0) {
       row.push(field);
-      if (row.some(function(value) { return value !== ''; })) {
+      if (row.some(function (value) { return value !== ''; })) {
         rows.push(row);
       }
     }
@@ -823,9 +834,9 @@
     }
 
     var headers = rows[0];
-    return rows.slice(1).map(function(values) {
+    return rows.slice(1).map(function (values) {
       var record = {};
-      headers.forEach(function(header, index) {
+      headers.forEach(function (header, index) {
         record[header] = values[index] || '';
       });
       return record;
@@ -833,7 +844,7 @@
   }
 
   function fetchCsv(path) {
-    return fetch(path).then(function(response) {
+    return fetch(path).then(function (response) {
       if (!response.ok) {
         throw new Error('Could not load ' + path);
       }
@@ -885,14 +896,14 @@
   function buildMetricTraces(experiment, rows, options) {
     assertColumn(rows, options.xColumn, options.csv);
 
-    return experiment.series.map(function(series) {
+    return experiment.series.map(function (series) {
       var columnName = metricColumn(series.key, options.metric);
       assertColumn(rows, columnName, options.csv);
 
       var xValues = [];
       var yValues = [];
 
-      rows.forEach(function(row) {
+      rows.forEach(function (row) {
         var x = toNumber(row[options.xColumn]);
         var y = toNumber(row[columnName]);
 
@@ -935,21 +946,21 @@
   function getXValues(traces) {
     var values = [];
 
-    traces.forEach(function(trace) {
-      trace.x.forEach(function(value) {
+    traces.forEach(function (trace) {
+      trace.x.forEach(function (value) {
         if (values.indexOf(value) === -1) {
           values.push(value);
         }
       });
     });
 
-    return values.sort(function(a, b) { return a - b; });
+    return values.sort(function (a, b) { return a - b; });
   }
 
   function getXTickValues(values) {
     var maxTickCount = window.innerWidth <= 480 ? 8 : 16;
     var step = Math.max(1, Math.ceil(values.length / maxTickCount));
-    var ticks = values.filter(function(value, index) {
+    var ticks = values.filter(function (value, index) {
       return index % step === 0;
     });
     var lastValue = values[values.length - 1];
@@ -962,7 +973,7 @@
   }
 
   function buildSummaryRows(experiment, trainRows, validationRows, testRows) {
-    return experiment.series.map(function(series) {
+    return experiment.series.map(function (series) {
       var trainColumn = metricColumn(series.key, experiment.trainMetric);
       var validationColumn = metricColumn(series.key, experiment.validationMetric);
       var testColumn = metricColumn(series.key, experiment.testMetric);
@@ -1049,7 +1060,7 @@
 
     var thead = document.createElement('thead');
     var headerRow = document.createElement('tr');
-    ['Run', 'Last train loss', 'Final validation', 'Test'].forEach(function(label) {
+    ['Run', 'Last train loss', 'Final validation', 'Test'].forEach(function (label) {
       var th = document.createElement('th');
       th.textContent = label;
       headerRow.appendChild(th);
@@ -1057,7 +1068,7 @@
     thead.appendChild(headerRow);
 
     var tbody = document.createElement('tbody');
-    rows.forEach(function(row) {
+    rows.forEach(function (row) {
       var tr = document.createElement('tr');
       var runCell = document.createElement('td');
       var swatch = document.createElement('span');
@@ -1166,9 +1177,9 @@
   }
 
   function getMetricExtent(runs, metric) {
-    var values = runs.map(function(run) {
+    var values = runs.map(function (run) {
       return run.metrics[metric.key];
-    }).filter(function(value) {
+    }).filter(function (value) {
       return value !== null && value !== undefined;
     });
 
@@ -1211,9 +1222,9 @@
       return false;
     }
 
-    var values = runs.map(function(run) {
+    var values = runs.map(function (run) {
       return run.metrics[metric.key];
-    }).filter(function(candidate) {
+    }).filter(function (candidate) {
       return candidate !== null && candidate !== undefined;
     });
     var bestValue = metric.direction === 'lower'
@@ -1302,10 +1313,10 @@
   }
 
   function buildDashboardRuns(config, metricRowsByKey) {
-    return config.runs.map(function(run) {
+    return config.runs.map(function (run) {
       var metrics = {};
 
-      config.metrics.forEach(function(metric) {
+      config.metrics.forEach(function (metric) {
         metrics[metric.key] = metricValueForRun(metricRowsByKey[metric.key], run.key, metric.wandbMetric);
       });
 
@@ -1328,7 +1339,7 @@
     var runHeader = document.createElement('div');
     var extents = {};
 
-    config.metrics.forEach(function(metric) {
+    config.metrics.forEach(function (metric) {
       extents[metric.key] = getMetricExtent(runs, metric);
     });
 
@@ -1351,13 +1362,13 @@
     header.appendChild(description);
 
     grid.appendChild(runHeader);
-    config.metrics.forEach(function(metric) {
+    config.metrics.forEach(function (metric) {
       grid.appendChild(createMetricHeader(metric));
     });
 
-    runs.forEach(function(run) {
+    runs.forEach(function (run) {
       grid.appendChild(createRunLabel(run));
-      config.metrics.forEach(function(metric) {
+      config.metrics.forEach(function (metric) {
         grid.appendChild(createMetricCell(run, metric, extents[metric.key], runs));
       });
     });
@@ -1376,8 +1387,8 @@
       return Promise.resolve();
     }
 
-    var fetches = config.metrics.map(function(metric) {
-      return fetchCsv(metric.csv).then(function(rows) {
+    var fetches = config.metrics.map(function (metric) {
+      return fetchCsv(metric.csv).then(function (rows) {
         return {
           key: metric.key,
           rows: rows
@@ -1385,17 +1396,17 @@
       });
     });
 
-    return Promise.all(fetches).then(function(results) {
+    return Promise.all(fetches).then(function (results) {
       var metricRowsByKey = {};
       var runs;
 
-      results.forEach(function(result) {
+      results.forEach(function (result) {
         metricRowsByKey[result.key] = result.rows;
       });
 
       runs = buildDashboardRuns(config, metricRowsByKey);
       renderMetricDashboard(container, config, runs);
-    }).catch(function(error) {
+    }).catch(function (error) {
       console.error(error);
       container.innerHTML = '';
       var errorMessage = document.createElement('div');
@@ -1415,7 +1426,7 @@
       direction: config.direction
     };
     var baselineValue = null;
-    var rankedRows = config.runs.map(function(run) {
+    var rankedRows = config.runs.map(function (run) {
       var value = metricValueForRun(rows, run.key, config.metric);
 
       if (run.key === config.baselineRunKey) {
@@ -1433,7 +1444,7 @@
       };
     });
 
-    rankedRows.sort(function(a, b) {
+    rankedRows.sort(function (a, b) {
       if (a.value === null || a.value === undefined) {
         return 1;
       }
@@ -1445,7 +1456,7 @@
       return config.direction === 'lower' ? a.value - b.value : b.value - a.value;
     });
 
-    return rankedRows.map(function(row) {
+    return rankedRows.map(function (row) {
       row.deltaFromBaseline = baselineValue === null || baselineValue === undefined || row.value === null || row.value === undefined
         ? null
         : row.value - baselineValue;
@@ -1561,7 +1572,7 @@
     header.appendChild(description);
     body.appendChild(axisHint);
 
-    rows.forEach(function(row) {
+    rows.forEach(function (row) {
       body.appendChild(createSingleMetricRow(row, extent, config));
     });
 
@@ -1579,9 +1590,9 @@
       return Promise.resolve();
     }
 
-    return fetchCsv(config.csv).then(function(rows) {
+    return fetchCsv(config.csv).then(function (rows) {
       renderSingleMetricDashboard(container, config, buildSingleMetricRows(config, rows));
-    }).catch(function(error) {
+    }).catch(function (error) {
       console.error(error);
       container.innerHTML = '';
       var errorMessage = document.createElement('div');
@@ -1603,7 +1614,7 @@
       fetchCsv(experiment.trainCsv),
       fetchCsv(experiment.validationCsv),
       fetchCsv(experiment.testCsv)
-    ]).then(function(results) {
+    ]).then(function (results) {
       var trainRows = results[0];
       var validationRows = results[1];
       var testRows = results[2];
@@ -1626,7 +1637,7 @@
         renderPlot(shell.trainChart, trainTraces, experiment.trainYAxisTitle),
         renderPlot(shell.validationChart, validationTraces, experiment.validationYAxisTitle)
       ]);
-    }).catch(function(error) {
+    }).catch(function (error) {
       var errorMessage = document.createElement('div');
 
       console.error(error);
@@ -1641,10 +1652,10 @@
 
   function initializeExperimentPlots() {
     var promises = [];
-    var sharedExperiments = EXPERIMENTS.filter(function(e) { return !e.containerId; });
-    var standaloneExperiments = EXPERIMENTS.filter(function(e) { return e.containerId; });
+    var sharedExperiments = EXPERIMENTS.filter(function (e) { return !e.containerId; });
+    var standaloneExperiments = EXPERIMENTS.filter(function (e) { return e.containerId; });
 
-    standaloneExperiments.forEach(function(experiment) {
+    standaloneExperiments.forEach(function (experiment) {
       var container = document.getElementById(experiment.containerId);
       if (!container) { return; }
       container.innerHTML = '';
@@ -1655,25 +1666,25 @@
       var dashboard = document.getElementById('experiment-dashboard');
       if (dashboard) {
         dashboard.innerHTML = '';
-        sharedExperiments.forEach(function(experiment) {
+        sharedExperiments.forEach(function (experiment) {
           promises.push(renderExperiment(dashboard, experiment));
         });
       }
     }
 
-    Promise.all(promises).catch(function(error) {
+    Promise.all(promises).catch(function (error) {
       console.error('Experiment plots failed to render.', error);
     });
   }
 
   var sectionsReady = window.sectionsReady || Promise.resolve();
-  sectionsReady.then(function() {
+  sectionsReady.then(function () {
     return Promise.all([
       initializeSingleMetricDashboards(),
       initializeMetricDashboards(),
       initializeExperimentPlots()
     ]);
-  }).catch(function(error) {
+  }).catch(function (error) {
     console.error('Experiment section failed to initialize.', error);
   });
 })();
