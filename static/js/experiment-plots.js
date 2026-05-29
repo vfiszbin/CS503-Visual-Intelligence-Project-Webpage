@@ -830,6 +830,8 @@
     }
   ];
 
+  var dashboardRenderPromises = {};
+
   function parseCsv(text) {
     var rows = [];
     var row = [];
@@ -1164,7 +1166,7 @@
     });
 
     var caption = document.createElement('caption');
-    caption.textContent = (experiment && experiment.summaryCaption) || 'Last training flow loss plus final validation and test median distance.';
+    caption.textContent = 'Last training flow loss plus final validation and test median distance.';
 
     table.appendChild(caption);
     table.appendChild(thead);
@@ -1727,41 +1729,263 @@
     });
   }
 
-  function initializeExperimentPlots() {
-    var promises = [];
-    var sharedExperiments = EXPERIMENTS.filter(function (e) { return !e.containerId; });
-    var standaloneExperiments = EXPERIMENTS.filter(function (e) { return e.containerId; });
-
-    standaloneExperiments.forEach(function (experiment) {
-      var container = document.getElementById(experiment.containerId);
-      if (!container) { return; }
-      container.innerHTML = '';
-      promises.push(renderExperiment(container, experiment));
-    });
-
-    if (sharedExperiments.length) {
-      var dashboard = document.getElementById('experiment-dashboard');
-      if (dashboard) {
-        dashboard.innerHTML = '';
-        sharedExperiments.forEach(function (experiment) {
-          promises.push(renderExperiment(dashboard, experiment));
-        });
+  function findConfigByContainerId(configs, containerId) {
+    for (var i = 0; i < configs.length; i++) {
+      if (configs[i].containerId === containerId) {
+        return configs[i];
       }
     }
 
-    Promise.all(promises).catch(function (error) {
-      console.error('Experiment plots failed to render.', error);
+    return null;
+  }
+
+  function resizePlotsIn(root) {
+    if (!window.Plotly || !window.Plotly.Plots || !window.Plotly.Plots.resize) {
+      return;
+    }
+
+    Array.prototype.slice.call(root.querySelectorAll('.js-plotly-plot')).forEach(function(plot) {
+      window.Plotly.Plots.resize(plot);
     });
   }
 
+  function renderDashboardContainer(container) {
+    var containerId;
+    var experiment;
+    var metricConfig;
+    var singleMetricConfig;
+    var sharedExperiments;
+    var promise;
+
+    if (!container || !container.id) {
+      return Promise.resolve();
+    }
+
+    containerId = container.id;
+
+    if (dashboardRenderPromises[containerId]) {
+      return dashboardRenderPromises[containerId];
+    }
+
+    experiment = findConfigByContainerId(EXPERIMENTS, containerId);
+    metricConfig = findConfigByContainerId(METRIC_DASHBOARDS, containerId);
+    singleMetricConfig = findConfigByContainerId(SINGLE_METRIC_DASHBOARDS, containerId);
+
+    if (experiment) {
+      container.innerHTML = '';
+      promise = renderExperiment(container, experiment);
+    } else if (metricConfig) {
+      promise = renderMetricDashboardConfig(metricConfig);
+    } else if (singleMetricConfig) {
+      promise = renderSingleMetricDashboardConfig(singleMetricConfig);
+    } else if (containerId === 'experiment-dashboard') {
+      sharedExperiments = EXPERIMENTS.filter(function(e) { return !e.containerId; });
+      container.innerHTML = '';
+      promise = Promise.all(sharedExperiments.map(function(sharedExperiment) {
+        return renderExperiment(container, sharedExperiment);
+      }));
+    } else {
+      promise = Promise.resolve();
+    }
+
+    dashboardRenderPromises[containerId] = Promise.resolve(promise).then(function(result) {
+      window.requestAnimationFrame(function() {
+        resizePlotsIn(container);
+      });
+      return result;
+    });
+
+    return dashboardRenderPromises[containerId];
+  }
+
+  function getDashboardHosts(root) {
+    return Array.prototype.slice.call(root.querySelectorAll(
+      '.experiment-dashboard[id], .metric-dashboard-host[id], .single-metric-dashboard-host[id]'
+    ));
+  }
+
+  function renderDashboardHosts(root) {
+    return Promise.all(getDashboardHosts(root).map(renderDashboardContainer)).then(function() {
+      resizePlotsIn(root);
+    });
+  }
+
+  function isVisibleElement(element) {
+    return !element.closest('[hidden]');
+  }
+
+  function renderVisibleDashboardHosts(root) {
+    return Promise.all(getDashboardHosts(root).filter(isVisibleElement).map(renderDashboardContainer));
+  }
+
+  function getExperimentPanels() {
+    return Array.prototype.slice.call(document.querySelectorAll('[data-experiment-panel]'));
+  }
+
+  function updateExperimentOpenControls() {
+    var openPanelIds = getExperimentPanels().filter(function(panel) {
+      return panel.classList.contains('is-open');
+    }).map(function(panel) {
+      return panel.id;
+    });
+
+    Array.prototype.slice.call(document.querySelectorAll('[data-experiment-open]')).forEach(function(control) {
+      var targetId = control.getAttribute('data-experiment-open');
+      var targetPanel = document.getElementById(targetId);
+      var targetBody = targetPanel ? targetPanel.querySelector('.experiment-accordion-body') : null;
+      var isOpen = openPanelIds.indexOf(targetId) !== -1;
+
+      control.classList.toggle('is-active', isOpen);
+      control.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (targetBody && targetBody.id) {
+        control.setAttribute('aria-controls', targetBody.id);
+      }
+    });
+  }
+
+  function closeExperimentPanel(panel) {
+    var trigger = panel.querySelector('.experiment-accordion-trigger');
+    var body = panel.querySelector('.experiment-accordion-body');
+
+    if (!body) {
+      return;
+    }
+
+    body.hidden = true;
+    panel.classList.remove('is-open');
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  function openExperimentPanel(panel, options) {
+    var trigger = panel.querySelector('.experiment-accordion-trigger');
+    var body = panel.querySelector('.experiment-accordion-body');
+    var shouldScroll = !options || options.scroll !== false;
+    var exclusive = !options || options.exclusive !== false;
+    var preservePosition = options && options.preservePosition === true;
+    var anchorTop = preservePosition && trigger ? trigger.getBoundingClientRect().top : null;
+
+    if (!body) {
+      return Promise.resolve();
+    }
+
+    if (exclusive) {
+      getExperimentPanels().forEach(function(otherPanel) {
+        if (otherPanel !== panel) {
+          closeExperimentPanel(otherPanel);
+        }
+      });
+    }
+
+    body.hidden = false;
+    panel.classList.add('is-open');
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+    updateExperimentOpenControls();
+
+    if (anchorTop !== null && trigger) {
+      window.scrollBy(0, trigger.getBoundingClientRect().top - anchorTop);
+    }
+
+    if (shouldScroll) {
+      window.requestAnimationFrame(function() {
+        (trigger || panel).scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
+      });
+    }
+
+    document.dispatchEvent(new CustomEvent('experiments:panel-opened', {
+      detail: {
+        panelId: panel.id,
+        panel: panel
+      }
+    }));
+
+    return renderDashboardHosts(body);
+  }
+
+  function toggleExperimentPanel(panel) {
+    var isOpen = panel.classList.contains('is-open');
+
+    if (isOpen) {
+      closeExperimentPanel(panel);
+      updateExperimentOpenControls();
+      return Promise.resolve();
+    }
+
+    return openExperimentPanel(panel, {
+      exclusive: true,
+      scroll: false,
+      preservePosition: true
+    });
+  }
+
+  function openExperimentPanelById(panelId) {
+    var panel = document.getElementById(panelId);
+
+    if (!panel || !panel.matches('[data-experiment-panel]')) {
+      return Promise.resolve();
+    }
+
+    return openExperimentPanel(panel, {
+      exclusive: true,
+      scroll: true
+    });
+  }
+
+  function collapseExperimentPanels() {
+    getExperimentPanels().forEach(closeExperimentPanel);
+    updateExperimentOpenControls();
+  }
+
+  function initializeExperimentAccordions() {
+    getExperimentPanels().forEach(function(panel) {
+      var trigger = panel.querySelector('.experiment-accordion-trigger');
+
+      if (!trigger) {
+        return;
+      }
+
+      trigger.addEventListener('click', function() {
+        toggleExperimentPanel(panel).catch(function(error) {
+          console.error('Experiment panel failed to open.', error);
+        });
+      });
+    });
+
+    document.addEventListener('click', function(event) {
+      var opener = event.target.closest('[data-experiment-open]');
+      var collapseButton = event.target.closest('[data-experiment-collapse-all]');
+
+      if (opener) {
+        event.preventDefault();
+        openExperimentPanelById(opener.getAttribute('data-experiment-open')).catch(function(error) {
+          console.error('Experiment panel failed to open.', error);
+        });
+      } else if (collapseButton) {
+        event.preventDefault();
+        collapseExperimentPanels();
+      }
+    });
+
+    updateExperimentOpenControls();
+
+    if (window.location.hash) {
+      openExperimentPanelById(window.location.hash.slice(1)).catch(function(error) {
+        console.error('Experiment panel failed to open from URL hash.', error);
+      });
+    }
+  }
+
   var sectionsReady = window.sectionsReady || Promise.resolve();
-  sectionsReady.then(function () {
-    return Promise.all([
-      initializeSingleMetricDashboards(),
-      initializeMetricDashboards(),
-      initializeExperimentPlots()
-    ]);
-  }).catch(function (error) {
+  sectionsReady.then(function() {
+    initializeExperimentAccordions();
+    return renderVisibleDashboardHosts(document);
+  }).catch(function(error) {
     console.error('Experiment section failed to initialize.', error);
   });
 })();

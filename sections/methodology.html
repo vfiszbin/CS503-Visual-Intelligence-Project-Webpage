@@ -146,41 +146,70 @@
           </p>
 
           <h4 class="title is-5">Final Configuration</h4>
-          <div class="table-container method-config-table">
-            <table class="table is-bordered is-striped is-narrow is-fullwidth">
-              <thead>
-                <tr>
-                  <th>Component</th>
-                  <th>Final choice</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Geometry</td>
-                  <td>Local planar $R^2$</td>
-                </tr>
-                <tr>
-                  <td>Image encoder</td>
-                  <td>StreetCLIP CLS</td>
-                </tr>
-                <tr>
-                  <td>LayerNorm</td>
-                  <td>Enabled</td>
-                </tr>
-                <tr>
-                  <td>CFG rate</td>
-                  <td>0.0</td>
-                </tr>
-                <tr>
-                  <td>Particles</td>
-                  <td>64</td>
-                </tr>
-                <tr>
-                  <td>Euler steps</td>
-                  <td>32</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="config-explorer" id="configuration-explorer">
+            <div class="config-explorer-header">
+              <div>
+                <h5>Configuration map</h5>
+                <p>Each row opens the ablation result that motivated the final choice.</p>
+              </div>
+              <a class="config-explorer-link" href="#experiment-browser">Experiment browser</a>
+            </div>
+            <div class="config-explorer-grid" role="list" aria-label="Final configuration and related ablations">
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-geometry" role="listitem">
+                <span class="config-component">Geometry</span>
+                <span class="config-final">Local planar $R^2$</span>
+                <span class="config-options">$S^2$ baseline, local $R^2$ flow</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-caption" role="listitem">
+                <span class="config-component">Image/text conditioning</span>
+                <span class="config-final">StreetCLIP CLS, image only</span>
+                <span class="config-options">Free captions, structured captions</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-classifier-prior" role="listitem">
+                <span class="config-component">Classifier prior</span>
+                <span class="config-final">Reported as an extra tuned variant</span>
+                <span class="config-options">Image only, canton probs, concatenated</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-combinations" role="listitem">
+                <span class="config-component">LayerNorm</span>
+                <span class="config-final">Enabled</span>
+                <span class="config-options">LayerNorm with CFG and sampling changes</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-cfg" role="listitem">
+                <span class="config-component">CFG rate</span>
+                <span class="config-final">0.0</span>
+                <span class="config-options">Unconditional, 0, 0.5, 1, 2, 4</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-sampling" role="listitem">
+                <span class="config-component">Initial sampling</span>
+                <span class="config-final">Swiss bounding rectangle</span>
+                <span class="config-options">Rectangles, circles, enlarged windows</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-particles" role="listitem">
+                <span class="config-component">Particles</span>
+                <span class="config-final">64</span>
+                <span class="config-options">64 to 512 particles</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-steps" role="listitem">
+                <span class="config-component">Euler steps</span>
+                <span class="config-final">32</span>
+                <span class="config-options">8, 16, 32, 64, 128 steps</span>
+                <span class="config-action">Open</span>
+              </button>
+              <button class="config-explorer-row" type="button" data-experiment-open="experiment-augmentation" role="listitem">
+                <span class="config-component">Training augmentation</span>
+                <span class="config-final">Unaugmented, longer training</span>
+                <span class="config-options">Strength, views, fixed compute</span>
+                <span class="config-action">Open</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
