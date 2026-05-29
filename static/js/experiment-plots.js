@@ -4,21 +4,30 @@
       id: 'baseline-classification',
       containerId: 'baseline-classification-dashboard',
       title: 'Canton classifier (StreetCLIP + MLP)',
-      description: 'Training curves for the frozen StreetCLIP + MLP canton classifier. This classifier is trained to predict the Swiss canton from a street-level image and its output probability distribution is later used as a conditioning signal for flow matching.',
-      trainCsv: './data/baseline-classification/train_loss.csv',
+      description: 'Training curves for the frozen StreetCLIP + MLP canton classifier. This classifier is trained to predict the Swiss canton from a street view image and its output probability distribution is later used as a conditioning signal for flow matching. The checkpoint is selected based on the lowest validation loss (MLP [1024], epoch 26).',
+      trainCsv: './data/baseline-classification/val_loss.csv',
       validationCsv: './data/baseline-classification/val_region_accuracy.csv',
       testCsv: './data/baseline-classification/test_region_accuracy.csv',
-      trainXColumn: 'training/epoch',
+      testCsv2: './data/baseline-classification/test_loss.csv',
+      trainXColumn: 'Step',
       validationXColumn: 'validation/epoch',
-      trainMetric: 'training/train_loss',
+      trainMetric: 'val_loss',
       validationMetric: 'validation/region_accuracy',
       testMetric: 'test/region_accuracy',
+      testMetric2: 'test_loss',
       trainYAxisTitle: 'Cross-entropy loss',
       validationYAxisTitle: 'Canton accuracy',
+      trainPanelTitle: 'Validation loss',
+      validationPanelTitle: 'Validation canton accuracy',
+      summaryCaption: 'Test cross-entropy loss and canton accuracy.',
+      summaryTableColumns: [
+        { key: 'test2', label: 'Test loss', digits: 3 },
+        { key: 'test', label: ' Test canton accuracy', digits: 1, multiplier: 100, unit: '%' }
+      ],
       series: [
         {
           key: 'mlp_baseline',
-          label: 'StreetCLIP + MLP',
+          label: 'StreetCLIP + MLP (MLP [1024])',
           color: '#7c3aed'
         }
       ]
@@ -185,6 +194,40 @@
         { key: 'target-coordinate_head-mlp768-768-512_lr-1e-3_epoch-50', label: 'MLP [768, 768, 512]', color: '#a78bfa' },
         { key: 'target-coordinate_head-mlp768-768-768_lr-1e-3_epoch-50', label: 'MLP [768, 768, 768]', color: '#c084fc' },
         { key: 'target-coordinate_head-mlp1024-768-512_lr-1e-3_epoch-50', label: 'MLP [1024, 768, 512]', color: '#e879f9' }
+      ]
+    },
+    {
+      containerId: 'baseline-classification-test-dashboard',
+      title: 'Canton classifier — test results',
+      eyebrow: 'Test split summary',
+      description: 'Final test loss and canton accuracy for the StreetCLIP + MLP classifier.',
+      metrics: [
+        {
+          key: 'testLoss',
+          label: 'Test loss',
+          unit: '',
+          digits: 3,
+          direction: 'lower',
+          csv: './data/baseline-classification/test_loss.csv',
+          wandbMetric: 'test_loss'
+        },
+        {
+          key: 'testAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './data/baseline-classification/test_region_accuracy.csv',
+          wandbMetric: 'test/region_accuracy'
+        }
+      ],
+      runs: [
+        {
+          key: 'mlp_baseline',
+          label: 'StreetCLIP + MLP',
+          color: '#7c3aed'
+        }
       ]
     },
     {
@@ -972,7 +1015,7 @@
     return ticks;
   }
 
-  function buildSummaryRows(experiment, trainRows, validationRows, testRows) {
+  function buildSummaryRows(experiment, trainRows, validationRows, testRows, test2Rows) {
     return experiment.series.map(function (series) {
       var trainColumn = metricColumn(series.key, experiment.trainMetric);
       var validationColumn = metricColumn(series.key, experiment.validationMetric);
@@ -982,13 +1025,21 @@
       assertColumn(validationRows, validationColumn, experiment.validationCsv);
       assertColumn(testRows, testColumn, experiment.testCsv);
 
-      return {
+      var row = {
         label: series.label,
         color: series.color,
         train: getLastMetricValue(trainRows, trainColumn),
         validation: getLastMetricValue(validationRows, validationColumn),
         test: getLastMetricValue(testRows, testColumn)
       };
+
+      if (test2Rows && experiment.testMetric2) {
+        var test2Column = metricColumn(series.key, experiment.testMetric2);
+        assertColumn(test2Rows, test2Column, experiment.testCsv2);
+        row.test2 = getLastMetricValue(test2Rows, test2Column);
+      }
+
+      return row;
     });
   }
 
@@ -1011,8 +1062,8 @@
     header.appendChild(description);
 
     var plotGrid = document.createElement('div');
-    var trainPanel = createPlotPanel('Training loss', 'experiment-train-plot-' + experiment.id);
-    var validationPanel = createPlotPanel('Evaluation metric', 'experiment-validation-plot-' + experiment.id);
+    var trainPanel = createPlotPanel(experiment.trainPanelTitle || 'Training loss', 'experiment-train-plot-' + experiment.id);
+    var validationPanel = createPlotPanel(experiment.validationPanelTitle || 'Evaluation metric', 'experiment-validation-plot-' + experiment.id);
 
     var tableWrap = document.createElement('div');
     tableWrap.className = 'table-container experiment-summary';
@@ -1058,13 +1109,23 @@
     var table = document.createElement('table');
     table.className = 'table is-bordered is-striped is-narrow is-hoverable is-fullwidth';
 
+    var customColumns = experiment && experiment.summaryTableColumns;
     var thead = document.createElement('thead');
     var headerRow = document.createElement('tr');
-    ['Run', 'Last train loss', 'Final validation', 'Test'].forEach(function (label) {
-      var th = document.createElement('th');
-      th.textContent = label;
-      headerRow.appendChild(th);
-    });
+
+    if (customColumns) {
+      ['Run'].concat(customColumns.map(function (c) { return c.label; })).forEach(function (label) {
+        var th = document.createElement('th');
+        th.textContent = label;
+        headerRow.appendChild(th);
+      });
+    } else {
+      ['Run', 'Last train loss', 'Final validation', 'Test'].forEach(function (label) {
+        var th = document.createElement('th');
+        th.textContent = label;
+        headerRow.appendChild(th);
+      });
+    }
     thead.appendChild(headerRow);
 
     var tbody = document.createElement('tbody');
@@ -1072,28 +1133,38 @@
       var tr = document.createElement('tr');
       var runCell = document.createElement('td');
       var swatch = document.createElement('span');
-      var trainCell = document.createElement('td');
-      var validationCell = document.createElement('td');
-      var testCell = document.createElement('td');
 
       swatch.className = 'experiment-swatch';
       swatch.style.backgroundColor = row.color;
-
       runCell.appendChild(swatch);
       runCell.appendChild(document.createTextNode(row.label));
-      trainCell.textContent = formatMetric(row.train, 4);
-      validationCell.textContent = formatMetric(row.validation, 2);
-      testCell.textContent = formatMetric(row.test, 2);
-
       tr.appendChild(runCell);
-      tr.appendChild(trainCell);
-      tr.appendChild(validationCell);
-      tr.appendChild(testCell);
+
+      if (customColumns) {
+        customColumns.forEach(function (col) {
+          var td = document.createElement('td');
+          var raw = row[col.key];
+          var value = (col.multiplier && raw !== null && raw !== undefined) ? raw * col.multiplier : raw;
+          td.textContent = formatMetric(value, col.digits) + (col.unit || '');
+          tr.appendChild(td);
+        });
+      } else {
+        var trainCell = document.createElement('td');
+        var validationCell = document.createElement('td');
+        var testCell = document.createElement('td');
+        trainCell.textContent = formatMetric(row.train, 4);
+        validationCell.textContent = formatMetric(row.validation, 2);
+        testCell.textContent = formatMetric(row.test, 2);
+        tr.appendChild(trainCell);
+        tr.appendChild(validationCell);
+        tr.appendChild(testCell);
+      }
+
       tbody.appendChild(tr);
     });
 
     var caption = document.createElement('caption');
-    caption.textContent = 'Last training flow loss plus final validation and test median distance.';
+    caption.textContent = (experiment && experiment.summaryCaption) || 'Last training flow loss plus final validation and test median distance.';
 
     table.appendChild(caption);
     table.appendChild(thead);
@@ -1610,14 +1681,20 @@
     var shell = createExperimentShell(experiment);
     dashboard.appendChild(shell.card);
 
-    return Promise.all([
+    var csvFetches = [
       fetchCsv(experiment.trainCsv),
       fetchCsv(experiment.validationCsv),
       fetchCsv(experiment.testCsv)
-    ]).then(function (results) {
+    ];
+    if (experiment.testCsv2) {
+      csvFetches.push(fetchCsv(experiment.testCsv2));
+    }
+
+    return Promise.all(csvFetches).then(function (results) {
       var trainRows = results[0];
       var validationRows = results[1];
       var testRows = results[2];
+      var test2Rows = results[3] || null;
       var trainTraces = buildMetricTraces(experiment, trainRows, {
         csv: experiment.trainCsv,
         xColumn: experiment.trainXColumn,
@@ -1630,7 +1707,7 @@
         metric: experiment.validationMetric,
         yAxisTitle: experiment.validationYAxisTitle
       });
-      var summaryRows = buildSummaryRows(experiment, trainRows, validationRows, testRows);
+      var summaryRows = buildSummaryRows(experiment, trainRows, validationRows, testRows, test2Rows);
 
       renderSummaryTable(shell.tableWrap, summaryRows, experiment);
       return Promise.all([

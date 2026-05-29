@@ -253,13 +253,25 @@
           </p>
           <p>
             We therefore used the classifier output probability distribution as an additional conditioning signal for
-            flow matching. The 26-dimensional canton probability vector was concatenated with the image embedding before
+            flow matching. To avoid data leakage, we adopted a two-stage training procedure: we first trained the canton
+            classifier on the training split and selected the best configuration based on validation loss
+            (cross-entropy).
+            The trained classifier was used to generate probabilities for the validationand test splits, which were used
+            for flow matching model evaluation.
+            Then, k fold cross-validation with the same configuration was performed to train and generate out-of-fold
+            classifier probabilities for all training samples, which were used for flow matching model
+            training.
+            The 26-dimensional canton probability vector was concatenated with the image embedding before
             conditioning the flow matching model.
           </p>
         </div>
 
         <div id="baseline-classification-dashboard" class="experiment-dashboard" aria-live="polite">
           <div class="experiment-status">Loading classifier training curves...</div>
+        </div>
+
+        <div id="baseline-classification-test-dashboard" class="experiment-dashboard" aria-live="polite">
+          <div class="experiment-status">Loading classifier test results...</div>
         </div>
 
         <figure class="experiment-architecture-figure">
