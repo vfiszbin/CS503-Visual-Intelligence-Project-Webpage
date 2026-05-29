@@ -59,12 +59,10 @@
         <h3 class="title is-4">Deterministic Baseline Results</h3>
         <div class="content has-text-justified">
           <p>
-            We first report an architecture search over MLP head configurations for the frozen StreetCLIP + MLP
-            regression baseline. Each variant uses the same frozen StreetCLIP encoder; only the MLP head dimensions
-            differ. The numbers in each label denote the hidden layer dimensions; the total number of layers is one more
-            than the number of hidden layers (e.g., [768, 768, 768] denotes 3 hidden layers, 4 layers total). The best
-            configuration — 3 hidden layers of dimension 768 — achieves a test median distance of 15.4 km and serves as
-            the deterministic reference for all subsequent probabilistic experiments.
+            We report an architecture search over MLP head configurations for the frozen StreetCLIP + MLP regression
+            baseline. All variants share the same frozen StreetCLIP encoder; only the MLP head layers differ. The
+            best configuration, MLP [768, 768, 768], achieves a test median distance of 15.4 km and a canton accuracy
+            of 52.6%, and serves as the deterministic reference for all subsequent probabilistic experiments.
           </p>
         </div>
 
