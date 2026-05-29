@@ -599,25 +599,61 @@
     });
   }
 
+  var cantonPredictionMapPromise = null;
+
+  function resizePlotsIn(container) {
+    if (!window.Plotly || !window.Plotly.Plots || !window.Plotly.Plots.resize) {
+      return;
+    }
+
+    Array.prototype.slice.call(container.querySelectorAll('.js-plotly-plot')).forEach(function(plot) {
+      window.Plotly.Plots.resize(plot);
+    });
+  }
+
   function initializeCantonPredictionMap() {
     var container = document.getElementById('canton-prediction-dashboard');
 
     if (!container) {
-      return;
+      return Promise.resolve();
+    }
+
+    if (container.closest('[hidden]')) {
+      return Promise.resolve();
+    }
+
+    if (cantonPredictionMapPromise) {
+      return cantonPredictionMapPromise.then(function() {
+        resizePlotsIn(container);
+      });
     }
 
     container.innerHTML = '<div class="experiment-status">Loading canton prediction map...</div>';
-    Promise.all([fetchJson(DATA_PATH), fetchJson(GEOJSON_PATH)])
+    cantonPredictionMapPromise = Promise.all([fetchJson(DATA_PATH), fetchJson(GEOJSON_PATH)])
       .then(function(results) {
         renderDashboard(container, results[0], results[1]);
+        window.requestAnimationFrame(function() {
+          resizePlotsIn(container);
+        });
       })
       .catch(function(error) {
         console.error(error);
         renderError(container, error.message);
       });
+
+    return cantonPredictionMapPromise;
   }
 
   var sectionsReady = window.sectionsReady || Promise.resolve();
+  document.addEventListener('experiments:panel-opened', function(event) {
+    var panel = event.detail && event.detail.panel;
+
+    if (panel && panel.querySelector('#canton-prediction-dashboard')) {
+      initializeCantonPredictionMap().catch(function(error) {
+        console.error('Canton prediction map failed to initialize.', error);
+      });
+    }
+  });
   sectionsReady.then(initializeCantonPredictionMap).catch(function(error) {
     console.error('Canton prediction map failed to initialize.', error);
   });

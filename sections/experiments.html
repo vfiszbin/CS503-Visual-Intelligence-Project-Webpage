@@ -56,7 +56,87 @@
           </ul>
         </div>
 
-        <h3 class="title is-4">Deterministic Baseline Results</h3>
+        <h3 class="title is-4" id="experiment-browser">Experiment Browser</h3>
+        <div class="content has-text-justified experiment-browser-intro">
+          <p>
+            The ablation results are organized as collapsed panels. Use the configuration map above or the experiment cards below to open the result that matches a specific model choice.
+          </p>
+        </div>
+
+        <div class="experiment-entry-grid" aria-label="Experiment shortcuts">
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-baseline">
+            <span>Baseline</span>
+            <strong>Regression architecture</strong>
+            <small>MLP head search for the deterministic reference.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-caption">
+            <span>Conditioning</span>
+            <strong>Caption conditioning</strong>
+            <small>Image-only, free captions, and structured captions.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-geometry">
+            <span>Geometry</span>
+            <strong>$S^2$ vs $R^2$ flow</strong>
+            <small>Global spherical flow compared with local Euclidean flow.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-classifier-prior">
+            <span>Conditioning</span>
+            <strong>Classifier priors</strong>
+            <small>Canton probability conditioning and classifier curves.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-sampling">
+            <span>Sampling</span>
+            <strong>Initial shape and size</strong>
+            <small>Rectangular and circular sampling windows.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-cfg">
+            <span>Inference</span>
+            <strong>CFG rate</strong>
+            <small>Unconditional and guided sampling strengths.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-particles">
+            <span>Inference</span>
+            <strong>Number of particles</strong>
+            <small>Sampling density sensitivity.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-steps">
+            <span>Inference</span>
+            <strong>Euler steps</strong>
+            <small>Integration step count from 8 to 128.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-augmentation">
+            <span>Training</span>
+            <strong>Data augmentation</strong>
+            <small>Strength, number of views, and fixed compute.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-combinations">
+            <span>Interactions</span>
+            <strong>Combined improvements</strong>
+            <small>LayerNorm, CFG, and sampling changes together.</small>
+          </button>
+          <button class="experiment-entry-card" type="button" data-experiment-open="experiment-final">
+            <span>Summary</span>
+            <strong>Final results</strong>
+            <small>Deterministic, spherical, local, and tuned models.</small>
+          </button>
+        </div>
+
+        <div class="experiment-browser-actions">
+          <button class="experiment-collapse-button" type="button" data-experiment-collapse-all>
+            Collapse open panel
+          </button>
+        </div>
+
+        <div class="experiment-accordion-list" data-experiment-browser>
+          <article class="experiment-accordion" id="experiment-baseline" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-baseline-body">
+              <span class="experiment-accordion-meta">Baseline</span>
+              <span class="experiment-accordion-title">Deterministic Baseline Results</span>
+              <span class="experiment-accordion-summary">Architecture search over MLP heads for the frozen StreetCLIP regression baseline.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-baseline-body" hidden>
+              <h3 class="title is-4">Deterministic Baseline Results</h3>
         <div class="content has-text-justified">
           <p>
             We report an architecture search over MLP head configurations for the frozen StreetCLIP + MLP regression
@@ -70,9 +150,18 @@
           <div class="experiment-status">Loading regression baseline results...</div>
         </div>
 
-        <h3 class="title is-4">Main Findings</h3>
+            </div>
+          </article>
 
-        <h4 class="title is-5">Textual caption conditioning</h4>
+          <article class="experiment-accordion" id="experiment-caption" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-caption-body">
+              <span class="experiment-accordion-meta">Conditioning</span>
+              <span class="experiment-accordion-title">Textual Caption Conditioning</span>
+              <span class="experiment-accordion-summary">Checks whether generated captions add useful geographic signal beyond the image encoder.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-caption-body" hidden>
+              <h4 class="title is-5">Textual caption conditioning</h4>
         <div class="content has-text-justified">
           <p>
             We explored whether adding a textual caption conditioning could improve the flow matching geolocalization
@@ -85,8 +174,12 @@
         </div>
 
         <figure class="experiment-architecture-figure">
-          <img src="./static/images/model_architecture/fm_architecture_img+caption.svg"
-            alt="Flow matching architecture with image and caption conditioning." />
+          <img
+            src="./static/images/model_architecture/fm_architecture_img+caption.svg"
+            alt="Flow matching architecture with image and caption conditioning."
+            loading="lazy"
+            decoding="async"
+          />
           <figcaption>
             Flow matching architecture with image and caption conditioning.
           </figcaption>
@@ -105,8 +198,12 @@
         <figure class="caption-example-panel">
           <div class="caption-example-image">
             <h4>Input image</h4>
-            <img src="./static/images/osv5m_sample1.png"
-              alt="Street-view sample showing a paved mountain road, hillside houses, and snowy mountains." />
+            <img
+              src="./static/images/osv5m_sample1.png"
+              alt="Street-view sample showing a paved mountain road, hillside houses, and snowy mountains."
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <div class="caption-example-list">
             <section class="caption-example-item caption-example-free">
@@ -167,7 +264,18 @@
           </p>
         </div>
 
-        <h4 class="title is-5">From global spherical $S^2$ to local planar Euclidean $R^2$ flow matching</h4>
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-geometry" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-geometry-body">
+              <span class="experiment-accordion-meta">Geometry</span>
+              <span class="experiment-accordion-title">From Global $S^2$ to Local $R^2$ Flow Matching</span>
+              <span class="experiment-accordion-summary">Compares the original spherical formulation with the local Euclidean model used for Switzerland.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-geometry-body" hidden>
+              <h4 class="title is-5">From global spherical $S^2$ to local planar Euclidean $R^2$ flow matching</h4>
         <div class="content has-text-justified">
           <p>
             The biggest breakthrough came from replacing the original spherical flow matching formulation with a local
@@ -190,13 +298,19 @@
               <h4>Global flow trajectory</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_rfm_s2_image_only_seed42_test_346061630183932_flow.gif"
-                alt="Spherical flow matching trajectory over the full world map." />
+                alt="Spherical flow matching trajectory over the full world map."
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div class="rfm-comparison-panel">
               <h4>Switzerland distribution</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_rfm_s2_image_only_seed42_test_346061630183932_switzerland_distribution.png"
-                alt="Spherical flow matching prediction distribution over Switzerland." />
+                alt="Spherical flow matching prediction distribution over Switzerland."
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
           <div class="rfm-comparison-row">
@@ -205,13 +319,19 @@
               <h4>Local flow trajectory</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_local_fm_r2_image_only_seed42_test_346061630183932_flow.gif"
-                alt="Local Euclidean flow matching trajectory over Switzerland." />
+                alt="Local Euclidean flow matching trajectory over Switzerland."
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div class="rfm-comparison-panel">
               <h4>Switzerland distribution</h4>
               <img
                 src="./static/images/rfm_vs_euclidian_fm/plonk_local_fm_r2_image_only_seed42_test_346061630183932_switzerland_distribution.png"
-                alt="Local Euclidean flow matching prediction distribution over Switzerland." />
+                alt="Local Euclidean flow matching prediction distribution over Switzerland."
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
           <figcaption>
@@ -239,7 +359,18 @@
           </p>
         </div>
 
-        <h4 class="title is-5">Conditioning flow matching with classifier priors</h4>
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-classifier-prior" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-classifier-prior-body">
+              <span class="experiment-accordion-meta">Conditioning</span>
+              <span class="experiment-accordion-title">Conditioning Flow Matching with Classifier Priors</span>
+              <span class="experiment-accordion-summary">Shows how canton classifier probabilities affect localization and canton-level accuracy.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-classifier-prior-body" hidden>
+              <h4 class="title is-5">Conditioning flow matching with classifier priors</h4>
         <div class="content has-text-justified">
           <p>
             We noticed that a simple canton classifier achieved higher canton-level accuracy than our flow matching
@@ -263,8 +394,12 @@
         </div>
 
         <figure class="experiment-architecture-figure">
-          <img src="./static/images/model_architecture/fm_architecture_img+probs_distrib.svg"
-            alt="Flow matching architecture with image embeddings and canton classifier probability conditioning." />
+          <img
+            src="./static/images/model_architecture/fm_architecture_img+probs_distrib.svg"
+            alt="Flow matching architecture with image embeddings and canton classifier probability conditioning."
+            loading="lazy"
+            decoding="async"
+          />
           <figcaption>
             Flow matching architecture with image embeddings and canton classifier probability conditioning.
           </figcaption>
@@ -304,9 +439,18 @@
           </p>
         </div>
 
-        <h3 class="title is-4">Additional Ablations</h3>
+            </div>
+          </article>
 
-        <h4 class="title is-5">Initial sampling shape and size impact</h4>
+          <article class="experiment-accordion" id="experiment-sampling" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-sampling-body">
+              <span class="experiment-accordion-meta">Sampling</span>
+              <span class="experiment-accordion-title">Initial Sampling Shape and Size</span>
+              <span class="experiment-accordion-summary">Tests how spherical/local initialization regions change accuracy and uncertainty.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-sampling-body" hidden>
+              <h4 class="title is-5">Initial sampling shape and size impact</h4>
         <div class="content has-text-justified">
           <p>
             Flow Matching generates locations by transporting samples drawn from an initial distribution. We
@@ -345,7 +489,10 @@
         <figure class="experiment-architecture-figure sampling-collapse-figure">
           <img
             src="./static/images/sampling_shape_size/plonk_rfm_s2_image_only_switzerland_circle_seed42_test_346061630183932_switzerland_flow.gif"
-            alt="Flow trajectory showing particle collapse." />
+            alt="Flow trajectory showing particle collapse."
+            loading="lazy"
+            decoding="async"
+          />
           <figcaption>
             Example of particle collapse when the flow becomes too contractive.
           </figcaption>
@@ -361,7 +508,18 @@
           </p>
         </div>
 
-        <h4 class="title is-5">Impact of Classifier-Free Guidance</h4>
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-cfg" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-cfg-body">
+              <span class="experiment-accordion-meta">Inference</span>
+              <span class="experiment-accordion-title">Impact of Classifier-Free Guidance</span>
+              <span class="experiment-accordion-summary">Evaluates how CFG rate affects point accuracy, canton accuracy, and entropy.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-cfg-body" hidden>
+              <h4 class="title is-5">Impact of Classifier-Free Guidance</h4>
         <div class="content has-text-justified">
           <p>
             We evaluated different values of the classifier-free guidance (CFG) rate during inference.
@@ -409,7 +567,18 @@
           </p>
         </div>
 
-        <h4 class="title is-5">Number of Particles</h4>
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-particles" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-particles-body">
+              <span class="experiment-accordion-meta">Inference</span>
+              <span class="experiment-accordion-title">Number of Particles</span>
+              <span class="experiment-accordion-summary">Checks whether increasing inference particles explains distribution collapse.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-particles-body" hidden>
+              <h4 class="title is-5">Number of Particles</h4>
         <div class="content has-text-justified">
           <p>
             To investigate whether the observed collapse was caused by insufficient sampling, we increased the number of
@@ -418,7 +587,18 @@
           </p>
         </div>
 
-        <h4 class="title is-5">Number of Flow Steps</h4>
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-steps" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-steps-body">
+              <span class="experiment-accordion-meta">Inference</span>
+              <span class="experiment-accordion-title">Number of Flow Steps</span>
+              <span class="experiment-accordion-summary">Compares Euler integration step counts during inference.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-steps-body" hidden>
+              <h4 class="title is-5">Number of Flow Steps</h4>
         <div class="content has-text-justified">
           <p>
             We evaluated the impact of the number of Euler integration steps at inference, ranging from 8 to 128 steps.
@@ -433,12 +613,34 @@
           <div class="experiment-status">Loading flow step results...</div>
         </div>
 
-        <h4 class="title is-5 experiment-curves-title mt-5">Data Augmentations</h4>
-        <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
-          <div class="experiment-status">Loading experiment results...</div>
-        </div>
+            </div>
+          </article>
 
-        <h4 class="title is-5">Combining Improvements</h4>
+          <article class="experiment-accordion" id="experiment-augmentation" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-augmentation-body">
+              <span class="experiment-accordion-meta">Training</span>
+              <span class="experiment-accordion-title">Data Augmentations</span>
+              <span class="experiment-accordion-summary">Groups augmentation strength, number of views, and fixed-compute curves.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-augmentation-body" hidden>
+              <h4 class="title is-5 experiment-curves-title mt-5">Data Augmentations</h4>
+          <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
+            <div class="experiment-status">Loading experiment results...</div>
+          </div>
+
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-combinations" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-combinations-body">
+              <span class="experiment-accordion-meta">Interactions</span>
+              <span class="experiment-accordion-title">Combining Improvements</span>
+              <span class="experiment-accordion-summary">Tests whether promising ablations remain useful when combined.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-combinations-body" hidden>
+              <h4 class="title is-5">Combining Improvements</h4>
         <div class="content has-text-justified">
           <p>
             The previous experiments identified several promising modifications: local ($R^2$) flow matching, pure
@@ -461,7 +663,18 @@
           <div class="experiment-status">Loading combined improvement results...</div>
         </div>
 
-        <h3 class="title is-4">Final Results</h3>
+            </div>
+          </article>
+
+          <article class="experiment-accordion" id="experiment-final" data-experiment-panel>
+            <button class="experiment-accordion-trigger" type="button" aria-expanded="false" aria-controls="experiment-final-body">
+              <span class="experiment-accordion-meta">Summary</span>
+              <span class="experiment-accordion-title">Final Results</span>
+              <span class="experiment-accordion-summary">Compares deterministic, spherical, local, tuned, and classifier-prior variants.</span>
+              <span class="experiment-accordion-icon" aria-hidden="true"></span>
+            </button>
+            <div class="experiment-accordion-body" id="experiment-final-body" hidden>
+              <h3 class="title is-4">Final Results</h3>
 
         <div id="final-results-dashboard" class="metric-dashboard-host" aria-live="polite">
           <div class="experiment-status">Loading final results...</div>
@@ -469,6 +682,11 @@
         <p class="experiment-note">
           <sup>1</sup> Tuned $R^2$ model: CFG=0, LayerNorm, trained for 100 epochs.
         </p>
+
+            </div>
+          </article>
+
+        </div>
 
         <h3 class="title is-4">Qualitative Analysis</h3>
 
@@ -505,52 +723,42 @@
 
         <div id="tab-city" class="theme-tab-content has-text-centered">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/city_images.png" alt="City Photos"
-              style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/city_images.png" alt="City Photos" loading="lazy" decoding="async" style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/city_switzerland_map.png"
-              alt="City Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/city_switzerland_map.png" alt="City Predictions Map" loading="lazy" decoding="async">
           </figure>
         </div>
         <div id="tab-countryside" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/countryside_images.png" alt="Countryside Photos"
-              style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/countryside_images.png" alt="Countryside Photos" loading="lazy" decoding="async" style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/countryside_switzerland_map.png"
-              alt="Countryside Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/countryside_switzerland_map.png" alt="Countryside Predictions Map" loading="lazy" decoding="async">
           </figure>
         </div>
         <div id="tab-railway" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/railway_images.png" alt="Railway Photos"
-              style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/railway_images.png" alt="Railway Photos" loading="lazy" decoding="async" style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/railway_switzerland_map.png"
-              alt="Railway Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/railway_switzerland_map.png" alt="Railway Predictions Map" loading="lazy" decoding="async">
           </figure>
         </div>
         <div id="tab-road" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/road_images.png" alt="Road Photos"
-              style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/road_images.png" alt="Road Photos" loading="lazy" decoding="async" style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/road_switzerland_map.png"
-              alt="Road Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/road_switzerland_map.png" alt="Road Predictions Map" loading="lazy" decoding="async">
           </figure>
         </div>
         <div id="tab-snow" class="theme-tab-content has-text-centered" style="display: none;">
           <figure>
-            <img src="./static/images/thematic_switzerland/fm_results/snow_view_images.png" alt="Snow Photos"
-              style="margin-bottom: 20px;">
+            <img src="./static/images/thematic_switzerland/fm_results/snow_view_images.png" alt="Snow Photos" loading="lazy" decoding="async" style="margin-bottom: 20px;">
             <br>
             <h4 class="title is-4 mb-2">Output results of the Flow matching model</h4>
-            <img src="./static/images/thematic_switzerland/fm_results/snow_view_switzerland_map.png"
-              alt="Snow Predictions Map">
+            <img src="./static/images/thematic_switzerland/fm_results/snow_view_switzerland_map.png" alt="Snow Predictions Map" loading="lazy" decoding="async">
           </figure>
         </div>
 
