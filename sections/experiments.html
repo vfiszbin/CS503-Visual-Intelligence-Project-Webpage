@@ -242,7 +242,47 @@
           </p>
         </div>
 
-         <h3 class="title is-4">Initial sampling shape and size impact</h3>
+        <h3 class="title is-4">Impact of Classifier-Free Guidance</h3>
+        <div class="content has-text-justified">
+          <p>
+            We evaluated different values of the classifier-free guidance (CFG) rate during inference.
+            CFG combines the conditional velocity predicted from the image with an unconditional velocity learned through condition dropout:
+          </p>
+          $$
+          v_{\text{guided}}
+          =
+          v_{\text{cond}}
+          +
+          \lambda
+          \left(
+          v_{\text{cond}}
+          -
+          v_{\text{uncond}}
+          \right)
+          $$
+          <p>
+            This is the same CFG formulation as in Dufour et al. <a href="#ref8">[8]</a>, with
+            $v_{\text{cond}} = \mathrm{model}(x, \gamma, \mathrm{condition})$ and
+            $v_{\text{uncond}} = \mathrm{model}(x, \gamma, \mathrm{zero\_condition})$.
+            Here, $\lambda$ is the CFG rate.
+          </p>
+          <p>
+            The model conditioned on image features performs substantially better than the unconditioned version, confirming that images provide useful localization information.
+            However, increasing the CFG rate consistently degraded performance. The best results were obtained with $\lambda = 0$, corresponding to pure conditional sampling.
+          </p>
+        </div>
+
+        <div id="cfg-rate-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading CFG results...</div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            A possible explanation is that, in our local $R^2$ formulation, the prediction space is already restricted to Switzerland and the image-conditioned flow is already strong. Increasing CFG amplifies the image-conditioned correction, making particles move more aggressively at each step. As the CFG rate increases, the predicted distributions become more compact, but this apparent increase in confidence is not reflected in the accuracy metrics. Instead, we observe an overconfident collapse of the particle distribution and worse localization performance.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Initial sampling shape and size impact</h3>
         <div class="content has-text-justified">
           <p>
             Flow Matching generates locations by transporting samples drawn from an initial distribution. We investigated how the shape and size of this initial sampling region affect localization performance and uncertainty.
