@@ -234,6 +234,128 @@ body {
   width: 45%;
 }
 
+.config-explorer {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+  overflow: hidden;
+}
+
+.config-explorer-header {
+  align-items: center;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+}
+
+.config-explorer-header h5 {
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.2rem;
+}
+
+.config-explorer-header p {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.config-explorer-link {
+  align-items: center;
+  color: #1d4ed8;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.config-explorer-grid {
+  display: grid;
+}
+
+.config-explorer-row {
+  align-items: center;
+  background: #ffffff;
+  border: 0;
+  border-bottom: 1px solid #edf0f5;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 0.8rem;
+  grid-template-columns: minmax(9rem, 0.85fr) minmax(12rem, 1.1fr) minmax(13rem, 1.35fr) auto;
+  min-height: 4.1rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.config-explorer-row:last-child {
+  border-bottom: 0;
+}
+
+.config-explorer-row:hover,
+.config-explorer-row:focus-visible,
+.config-explorer-row.is-active {
+  background: #f8fbff;
+}
+
+.config-explorer-row:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.28);
+  outline-offset: -3px;
+}
+
+.config-component,
+.config-final,
+.config-options {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.config-component {
+  color: #111827;
+  font-weight: 700;
+}
+
+.config-final {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.config-options {
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.config-action {
+  align-items: center;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  color: #1d4ed8;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  min-width: 3.4rem;
+  padding: 0.42rem 0.62rem;
+}
+
+.config-explorer-row.is-active .config-action {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+}
+
 .metric-dashboard-host {
   margin-top: 1rem;
 }
@@ -673,6 +795,190 @@ body {
   color: #b45309;
 }
 
+.experiment-browser-intro {
+  margin-bottom: 0.75rem;
+}
+
+.experiment-entry-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0.75rem 0 0.8rem;
+}
+
+.experiment-entry-card {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 0.25rem;
+  min-height: 8.2rem;
+  padding: 0.85rem;
+  text-align: left;
+}
+
+.experiment-entry-card:hover,
+.experiment-entry-card:focus-visible,
+.experiment-entry-card.is-active {
+  border-color: #93c5fd;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.experiment-entry-card:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 2px;
+}
+
+.experiment-entry-card span {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.experiment-entry-card strong {
+  color: #111827;
+  display: block;
+  font-size: 0.98rem;
+  line-height: 1.25;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.experiment-entry-card small {
+  color: #4b5563;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.experiment-browser-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.6rem 0 0.75rem;
+}
+
+.experiment-collapse-button {
+  background: #f8fafc;
+  border: 1px solid #d9dee8;
+  border-radius: 999px;
+  color: #334155;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.55rem 0.8rem;
+}
+
+.experiment-collapse-button:hover,
+.experiment-collapse-button:focus-visible {
+  background: #eef6ff;
+  border-color: #93c5fd;
+}
+
+.experiment-collapse-button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 2px;
+}
+
+.experiment-accordion-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.experiment-accordion {
+  background: #ffffff;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.experiment-accordion.is-open {
+  border-color: #93c5fd;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+}
+
+.experiment-accordion-trigger {
+  align-items: center;
+  background: #ffffff;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 0.2rem 0.85rem;
+  grid-template-columns: minmax(6.5rem, 0.35fr) minmax(14rem, 0.9fr) minmax(0, 1.4fr) auto;
+  min-height: 5.1rem;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.experiment-accordion-trigger:hover,
+.experiment-accordion-trigger:focus-visible,
+.experiment-accordion.is-open .experiment-accordion-trigger {
+  background: #f8fbff;
+}
+
+.experiment-accordion-trigger:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.26);
+  outline-offset: -3px;
+}
+
+.experiment-accordion-meta {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.experiment-accordion-title {
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.experiment-accordion-summary {
+  color: #4b5563;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  min-width: 0;
+}
+
+.experiment-accordion-icon {
+  border-bottom: 2px solid #334155;
+  border-right: 2px solid #334155;
+  height: 0.58rem;
+  transform: rotate(45deg);
+  transition: transform 160ms ease;
+  width: 0.58rem;
+}
+
+.experiment-accordion.is-open .experiment-accordion-icon {
+  transform: rotate(225deg);
+}
+
+.experiment-accordion-body {
+  border-top: 1px solid #e5e7eb;
+  padding: 1.1rem 1rem 1rem;
+}
+
+.experiment-accordion-body > .title:first-child {
+  margin-top: 0;
+}
+
 .experiment-curves-title {
   margin-top: 2rem;
 }
@@ -682,6 +988,19 @@ body {
   border-radius: 8px;
   padding: 1rem;
   background: #ffffff;
+}
+
+.experiment-accordion-body .experiment-card {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.experiment-accordion-body .experiment-card:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.1rem;
+  padding-bottom: 1.1rem;
 }
 
 .experiment-card:not(:last-child) {
@@ -711,6 +1030,7 @@ body {
 .experiment-plot-panel {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
+  background: #ffffff;
   min-width: 0;
   padding: 0.75rem;
 }
@@ -724,7 +1044,7 @@ body {
 
 .experiment-plot {
   width: 100%;
-  min-height: 360px;
+  min-height: 430px;
 }
 
 .experiment-summary {
@@ -880,7 +1200,60 @@ body {
   color: #2563eb;
 }
 
+@media screen and (max-width: 1024px) {
+  .experiment-entry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .experiment-accordion-trigger {
+    grid-template-columns: minmax(5.8rem, 0.35fr) minmax(12rem, 1fr) minmax(0, 1.15fr) auto;
+  }
+}
+
 @media screen and (max-width: 768px) {
+  .config-explorer-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .config-explorer-row {
+    gap: 0.45rem;
+    grid-template-columns: 1fr;
+  }
+
+  .config-action {
+    justify-self: flex-start;
+  }
+
+  .experiment-entry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .experiment-entry-card {
+    min-height: 0;
+  }
+
+  .experiment-accordion-trigger {
+    grid-template-columns: 1fr auto;
+  }
+
+  .experiment-accordion-meta,
+  .experiment-accordion-title,
+  .experiment-accordion-summary {
+    grid-column: 1;
+  }
+
+  .experiment-accordion-icon {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    justify-self: end;
+  }
+
+  .experiment-accordion-body {
+    padding: 0.85rem 0.75rem 0.75rem;
+  }
+
   .metric-dashboard-grid {
     grid-template-columns: minmax(10rem, 0.95fr) repeat(var(--metric-count), minmax(8.75rem, 1fr));
   }
@@ -950,7 +1323,7 @@ body {
   }
 
   .experiment-plot {
-    min-height: 360px;
+    min-height: 380px;
   }
 
   .canton-map-card {
