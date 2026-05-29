@@ -234,6 +234,15 @@ body {
   width: 100%;
 }
 
+.sampling-collapse-figure {
+  margin-top: 0.25rem;
+}
+
+.sampling-collapse-figure img {
+  margin: 0 auto;
+  max-width: 38rem;
+}
+
 .experiment-note {
   color: #64748b;
   font-size: 0.82rem;

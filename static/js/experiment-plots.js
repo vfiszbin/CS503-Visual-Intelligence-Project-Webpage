@@ -219,6 +219,187 @@
           color: '#f59e0b'
         }
       ]
+    },
+    {
+      containerId: 'sampling-shape-s2-dashboard',
+      title: 'S2 initial sampling',
+      eyebrow: 'Test split summary',
+      description: 'Effect of restricting spherical flow matching initialization to Switzerland-shaped regions.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/sampling_shape_size/S2/test_mode_median_km.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'cantonAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/sampling_shape_size/S2/test_region_accuracy.csv',
+          wandbMetric: 'test/mode/admin_accuracy/region'
+        },
+        {
+          key: 'entropy',
+          label: 'Median entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          csv: './static/data/sampling_shape_size/S2/test_mean_heatmap_entropy.csv',
+          wandbMetric: 'test/uncertainty/median_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'plonk_rfm_s2_image_only_seed42',
+          label: 'Global init',
+          color: '#2563eb'
+        },
+        {
+          key: 'plonk_rfm_s2_image_only_inference_only_switzerland_rectangle_seed42',
+          label: 'Inference rect',
+          color: '#60a5fa'
+        },
+        {
+          key: 'plonk_rfm_s2_image_only_inference_only_switzerland_circle_seed42',
+          label: 'Inference circle',
+          color: '#93c5fd'
+        },
+        {
+          key: 'plonk_rfm_s2_image_only_train_and_inference_switzerland_rectangle_seed42',
+          label: 'Train+infer rect',
+          color: '#f97316'
+        },
+        {
+          key: 'plonk_rfm_s2_image_only_train_and_inference_switzerland_circle_seed42',
+          label: 'Train+infer circle',
+          color: '#fb923c'
+        }
+      ]
+    },
+    {
+      containerId: 'sampling-shape-r2-dashboard',
+      title: 'R2 initial sampling',
+      eyebrow: 'Test split summary',
+      description: 'Effect of rectangular and circular initialization regions at different relative sizes.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/sampling_shape_size/R2/test_mode_median_km.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'cantonAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/sampling_shape_size/R2/test_region_accuracy.csv',
+          wandbMetric: 'test/mode/admin_accuracy/region'
+        },
+        {
+          key: 'entropy',
+          label: 'Median entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          csv: './static/data/sampling_shape_size/R2/test_mean_heatmap_entropy.csv',
+          wandbMetric: 'test/uncertainty/median_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'plonk_local_fm_r2_image_only_seed42',
+          label: 'Default',
+          color: '#111827'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_1p5x_seed42',
+          label: 'Rect 1.5x',
+          color: '#bfdbfe'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_2x_seed42',
+          label: 'Rect 2x',
+          color: '#93c5fd'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_4x_seed42',
+          label: 'Rect 4x',
+          color: '#60a5fa'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_8x_seed42',
+          label: 'Rect 8x',
+          color: '#3b82f6'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_16x_seed42',
+          label: 'Rect 16x',
+          color: '#2563eb'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_32x_seed42',
+          label: 'Rect 32x',
+          color: '#1d4ed8'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_rectangle_64x_seed42',
+          label: 'Rect 64x',
+          color: '#1e40af'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_seed42',
+          label: 'Circle 1x',
+          color: '#bbf7d0'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_1p5x_seed42',
+          label: 'Circle 1.5x',
+          color: '#86efac'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_2x_seed42',
+          label: 'Circle 2x',
+          color: '#4ade80'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_4x_seed42',
+          label: 'Circle 4x',
+          color: '#22c55e'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_8x_seed42',
+          label: 'Circle 8x',
+          color: '#16a34a'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_16x_seed42',
+          label: 'Circle 16x',
+          color: '#15803d'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_32x_seed42',
+          label: 'Circle 32x',
+          color: '#166534'
+        },
+        {
+          key: 'plonk_local_fm_r2_image_only_switzerland_circle_64x_seed42',
+          label: 'Circle 64x',
+          color: '#14532d'
+        }
+      ]
     }
   ];
 
@@ -624,6 +805,20 @@
   }
 
   function metricValueForRun(rows, runKey, wandbMetric) {
+    if (
+      rows.length &&
+      Object.prototype.hasOwnProperty.call(rows[0], 'Name') &&
+      Object.prototype.hasOwnProperty.call(rows[0], wandbMetric)
+    ) {
+      for (var i = rows.length - 1; i >= 0; i--) {
+        if (rows[i].Name === runKey) {
+          return toNumber(rows[i][wandbMetric]);
+        }
+      }
+
+      throw new Error('Missing run "' + runKey + '" in row-wise metric export.');
+    }
+
     var columnName = metricColumn(runKey, wandbMetric);
 
     assertColumn(rows, columnName, wandbMetric);

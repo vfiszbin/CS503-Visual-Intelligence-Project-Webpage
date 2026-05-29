@@ -242,6 +242,49 @@
           </p>
         </div>
 
+         <h3 class="title is-4">Initial sampling shape and size impact</h3>
+        <div class="content has-text-justified">
+          <p>
+            Flow Matching generates locations by transporting samples drawn from an initial distribution. We investigated how the shape and size of this initial sampling region affect localization performance and uncertainty.
+          </p>
+        </div>
+
+        <h4 class="title is-5">Spherical $S^2$ sampling</h4>
+        <div class="content has-text-justified">
+          <p>
+            For the original spherical ($S^2$) model, restricting both training and inference to a small region around Switzerland proved detrimental. The model learned almost zero target velocities, resulting in a degenerate flow that failed to transport samples correctly. In contrast, training on the full sphere while restricting inference to Switzerland remained effective and slightly benefited from circular sampling regions.
+          </p>
+        </div>
+        <div id="sampling-shape-s2-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading S2 sampling results...</div>
+        </div>
+
+        <h4 class="title is-5 mt-4">Local $R^2$ sampling</h4>
+        <div class="content has-text-justified">
+          <p>
+            For the local ($R^2$) formulation, the effect was different. Very small sampling windows were overly restrictive, while moderately larger windows improved localization accuracy. The best results were obtained with a circular window enlarged by a factor of 16. However, excessively large windows caused the flow to become strongly contractive, collapsing most samples to a single location and reducing uncertainty diversity.
+
+            Although some enlarged-window variants achieved better results in isolation, subsequent experiments combining other improvements such as LayerNorm and optimal CFG rate ultimately showed that the standard rectangular sampling region remained the strongest overall configuration.
+          </p>
+        </div>
+        <figure class="experiment-architecture-figure sampling-collapse-figure">
+          <img
+            src="./static/images/sampling_shape_size/plonk_rfm_s2_image_only_switzerland_circle_seed42_test_346061630183932_switzerland_flow.gif"
+            alt="Flow trajectory showing particle collapse."
+          />
+          <figcaption>
+            Example of particle collapse when the flow becomes too contractive.
+          </figcaption>
+        </figure>
+        <div id="sampling-shape-r2-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading R2 sampling results...</div>
+        </div>
+        <div class="content has-text-justified">
+          <p>
+            Overall, we see a trade-off between localization accuracy and uncertainty calibration: larger sampling regions can improve point estimates, but may also produce overconfident predictions by collapsing most samples to a single location.
+          </p>
+        </div>
+
         <h3 class="title is-4 experiment-curves-title mt-5">Training Curves and Ablations</h3>
           <div id="experiment-dashboard" class="experiment-dashboard" aria-live="polite">
             <div class="experiment-status">Loading experiment results...</div>
