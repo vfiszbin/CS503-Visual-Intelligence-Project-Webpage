@@ -1,6 +1,63 @@
 (function() {
   var EXPERIMENTS = [
     {
+      id: 'baseline-regression',
+      containerId: 'baseline-regression-dashboard',
+      title: 'MLP regression architecture ablation',
+      description: 'Comparison of different MLP head architectures for the frozen StreetCLIP + MLP regression baseline. Each run uses the same frozen StreetCLIP encoder; only the MLP head dimensions differ.',
+      trainCsv: './data/baseline-regression/regression_train_loss.csv',
+      validationCsv: './data/baseline-regression/regression_val_median_distance.csv',
+      testCsv: './data/baseline-regression/regression_test_median_distance.csv',
+      trainXColumn: 'Step',
+      validationXColumn: 'Step',
+      trainMetric: 'train_loss',
+      validationMetric: 'val_median_distance_km',
+      testMetric: 'test_median_distance_km',
+      trainYAxisTitle: 'MSE loss',
+      validationYAxisTitle: 'Median distance (km)',
+      series: [
+        { key: 'target-coordinate_head-linear_lr-1e-3_epoch-50',          label: 'Linear',             color: '#dc2626' },
+        { key: 'target-coordinate_head-mlp256_lr-1e-3_epoch-50',           label: 'MLP [256]',          color: '#f97316' },
+        { key: 'target-coordinate_head-mlp512_lr-1e-3_epoch-50',           label: 'MLP [512]',          color: '#fb923c' },
+        { key: 'target-coordinate_head-mlp768_lr-1e-3_epoch-50',           label: 'MLP [768]',          color: '#fbbf24' },
+        { key: 'target-coordinate_head-mlp1024_lr-1e-3_epoch-50',          label: 'MLP [1024]',         color: '#facc15' },
+        { key: 'target-coordinate_head-mlp512-256_lr-1e-3_epoch-50',       label: 'MLP [512, 256]',     color: '#a3e635' },
+        { key: 'target-coordinate_head-mlp768-256_lr-1e-3_epoch-50',       label: 'MLP [768, 256]',     color: '#4ade80' },
+        { key: 'target-coordinate_head-mlp768-512_lr-1e-3_epoch-50',       label: 'MLP [768, 512]',     color: '#34d399' },
+        { key: 'target-coordinate_head-mlp768-768_lr-1e-3_epoch-50',       label: 'MLP [768, 768]',     color: '#2dd4bf' },
+        { key: 'target-coordinate_head-mlp1024-256_lr-1e-3_epoch-50',      label: 'MLP [1024, 256]',    color: '#22d3ee' },
+        { key: 'target-coordinate_head-mlp1024-512_lr-1e-3_epoch-50',      label: 'MLP [1024, 512]',    color: '#38bdf8' },
+        { key: 'target-coordinate_head-mlp1024-768_lr-1e-3_epoch-50',      label: 'MLP [1024, 768]',    color: '#60a5fa' },
+        { key: 'target-coordinate_head-mlp768-512-256_lr-1e-3_epoch-50',   label: 'MLP [768, 512, 256]',color: '#818cf8' },
+        { key: 'target-coordinate_head-mlp768-768-512_lr-1e-3_epoch-50',   label: 'MLP [768, 768, 512]',color: '#a78bfa' },
+        { key: 'target-coordinate_head-mlp768-768-768_lr-1e-3_epoch-50',   label: 'MLP [768, 768, 768]',color: '#c084fc' },
+        { key: 'target-coordinate_head-mlp1024-768-512_lr-1e-3_epoch-50',  label: 'MLP [1024, 768, 512]',color: '#e879f9' }
+      ]
+    },
+    {
+      id: 'baseline-classification',
+      containerId: 'baseline-classification-dashboard',
+      title: 'Canton classifier (StreetCLIP + MLP)',
+      description: 'Training curves for the frozen StreetCLIP + MLP canton classifier. This classifier is trained to predict the Swiss canton from a street-level image and its output probability distribution is later used as a conditioning signal for flow matching.',
+      trainCsv: './data/baseline-classification/train_loss.csv',
+      validationCsv: './data/baseline-classification/val_region_accuracy.csv',
+      testCsv: './data/baseline-classification/test_region_accuracy.csv',
+      trainXColumn: 'training/epoch',
+      validationXColumn: 'validation/epoch',
+      trainMetric: 'training/train_loss',
+      validationMetric: 'validation/region_accuracy',
+      testMetric: 'test/region_accuracy',
+      trainYAxisTitle: 'Cross-entropy loss',
+      validationYAxisTitle: 'Canton accuracy',
+      series: [
+        {
+          key: 'mlp_baseline',
+          label: 'StreetCLIP + MLP',
+          color: '#7c3aed'
+        }
+      ]
+    },
+    {
       id: 'augmentation-level',
       title: 'Augmentation level',
       description: 'In our research, we observed that images from the Switzerland region tend to have high visual similarity, which motivated us to explore image augmentation as a means to increase variance and improve the model\'s ability to distinguish between different regions. To systematically evaluate this, we conducted a robustness experiment examining the necessity of augmentation and the appropriate level of aggressiveness (conservative vs. aggressive). However, our experiments revealed that more aggressive augmentation actually hurts final performance. A likely explanation is that heavily augmented images fall outside StreetCLIP\'s familiar input distribution, causing its feature outputs to become distorted and degrading the originally strong feature representations.',
@@ -1294,16 +1351,28 @@
   }
 
   function initializeExperimentPlots() {
-    var dashboard = document.getElementById('experiment-dashboard');
+    var promises = [];
+    var sharedExperiments = EXPERIMENTS.filter(function(e) { return !e.containerId; });
+    var standaloneExperiments = EXPERIMENTS.filter(function(e) { return e.containerId; });
 
-    if (!dashboard) {
-      return;
+    standaloneExperiments.forEach(function(experiment) {
+      var container = document.getElementById(experiment.containerId);
+      if (!container) { return; }
+      container.innerHTML = '';
+      promises.push(renderExperiment(container, experiment));
+    });
+
+    if (sharedExperiments.length) {
+      var dashboard = document.getElementById('experiment-dashboard');
+      if (dashboard) {
+        dashboard.innerHTML = '';
+        sharedExperiments.forEach(function(experiment) {
+          promises.push(renderExperiment(dashboard, experiment));
+        });
+      }
     }
 
-    dashboard.innerHTML = '';
-    Promise.all(EXPERIMENTS.map(function(experiment) {
-      return renderExperiment(dashboard, experiment);
-    })).catch(function(error) {
+    Promise.all(promises).catch(function(error) {
       console.error('Experiment plots failed to render.', error);
     });
   }
