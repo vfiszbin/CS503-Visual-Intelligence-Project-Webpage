@@ -56,8 +56,132 @@
 
         <div class="content has-text-justified">
           <p>
-            The figure above illustrates the architecture using image-only features as input. We adopt the CLS token from the StreetCLIP image encoder as the visual representation. Because StreetCLIP is further trained on street-view data, it is more effective for image geolocation tasks. After feature extraction, a condition projection module, implemented as a LayerNorm followed by a linear layer, reduces the original 1024-dimensional feature to 512 dimensions. The resulting condition feature is then passed to a Euclidean Flow Matching model defined on a regional $R^2$ plane. The model initializes $n$ random points on the map and learns trajectories that progressively converge to a stable region. Based on these generated samples, we construct a heatmap and select the sample with the highest density score as the final latitude and longitude prediction.
+            The figure above illustrates the image-conditioned flow matching architecture used in our final model.
           </p>
+
+          <h4 class="title is-5">Image Conditioning</h4>
+          <div class="method-side-figure-block">
+            <figure class="method-inline-figure">
+              <img
+                src="./static/images/model_architecture/condition_projection.svg"
+                alt="Condition projection module using LayerNorm and a linear projection."
+              />
+            </figure>
+            <p>
+              We follow Dufour et al. <a href="#ref8">[8]</a> and use a frozen StreetCLIP vision encoder <a href="#ref7">[7]</a> as the visual backbone. We experimented with both the projected StreetCLIP image embedding (768 dimensions) and the raw CLS token from the vision transformer (1024 dimensions). The CLS representation performed better and was therefore retained in the final model. We also evaluated DINOv2 as an alternative visual encoder, but did not observe improvements over StreetCLIP. The selected 1024-dimensional CLS embedding is projected to the model dimension through a LayerNorm followed by a linear layer.
+            </p>
+          </div>
+
+          <h4 class="title is-5">Local Swiss Coordinate System</h4>
+          <p>
+            Rather than operating directly on latitude and longitude, we project all locations into a local planar coordinate system centered on Switzerland. Latitude and longitude coordinates are converted into local kilometer coordinates using a fixed reference point near the center of Switzerland and then normalized to a fixed$[-1,1]^2$ region.
+          </p>
+          <p>
+            This representation is a deliberate simplification. Since our task is restricted to Switzerland, Earth curvature is negligible at this scale and a local planar approximation is sufficient. This allows us to replace geodesic trajectories on the sphere with standard Euclidean flow matching while keeping the coordinate system simple and numerically stable.
+          </p>
+          <div class="method-side-figure-block">
+            <figure class="method-inline-figure method-inline-figure-wide">
+              <img
+                src="./static/images/coordinates_clipping.png"
+                alt="Swiss coordinate clipping illustration showing the rectangular sampling region."
+              />
+              <figcaption>
+                Particles clipping to the normalized Swiss bounding box.
+              </figcaption>
+            </figure>
+            <p>
+              The normalized Swiss bounding box defines the valid sampling region. Particles that move outside it are clipped back inside, which can occasionally create visible concentrations near the borders. Future work could replace this rectangular approximation with the actual Swiss boundary.
+            </p>
+          </div>
+
+          <h4 class="title is-5">Flow Matching Objective</h4>
+          <p>
+            Given an image and its target location $x_{\text{target}}$, we sample a random starting point uniformly over Switzerland:
+          </p>
+          $$
+          x_{\text{base}} \sim \mathrm{Uniform}([-1,1]^2)
+          $$
+          <p>
+            We then construct an intermediate point along the straight path between the two locations:
+          </p>
+          $$
+          x_t = (1-\gamma)x_{\text{base}} + \gamma x_{\text{target}}
+          $$
+          <p>
+            where $\gamma$ is a random interpolation time. Rather than using ($\gamma=t$), we follow Dufour et al. <a href="#ref8">[8]</a> and apply a sigmoid scheduler ($\gamma=\kappa(t)$). This gives more weight to training points where the sampled location is already closer to the ground-truth location. According to Dufour et al., this encourages the model to focus on finer localization cues rather than only learning coarse geographic information.
+            
+            The target velocity is the constant displacement between the start and target locations:
+          </p>
+          $$
+          v_{\text{target}} = x_{\text{target}} - x_{\text{base}}
+          $$
+          <p>
+            The model receives $(x_t,\gamma,\text{image})$ and predicts a 2D velocity field. Training minimizes the mean squared error between predicted and target velocities:
+          </p>
+          $$
+          \mathcal{L} = \frac{1}{2}\lVert v_{\text{pred}} - v_{\text{target}} \rVert^2
+          $$
+
+          <h4 class="title is-5">Classifier-Free Guidance</h4>
+          <p>
+            Following Dufour et al. <a href="#ref8">[8]</a>, we train the model with condition dropout, allowing both conditional and unconditional velocity predictions. At inference time, the guided velocity is
+          </p>
+          $$
+          v_{\text{guided}}
+          =
+          (1+\lambda)v_{\text{cond}}
+          -
+          \lambda v_{\text{uncond}}
+          $$
+          <p>
+            where $\lambda$ controls the guidance strength. Our final model uses $\lambda = 0$, corresponding to purely conditional sampling.
+          </p>
+
+          <h4 class="title is-5">Flow Matching Network and Inference</h4>
+          <p>
+            The trainable model is a 12-layer AdaLN MLP conditioned on the StreetCLIP embedding and the interpolation time $\gamma$. Given an image, inference starts from 64 particles sampled uniformly over Switzerland. The learned velocity field is then integrated using 32 Euler steps, progressively transporting the particles toward likely image locations.
+          </p>
+          <p>
+            This produces a distribution of candidate locations rather than a single prediction. The final geolocation estimate is obtained from the mode of the particle distribution.
+          </p>
+
+          <h4 class="title is-5">Final Configuration</h4>
+          <div class="table-container method-config-table">
+            <table class="table is-bordered is-striped is-narrow is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Final choice</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Geometry</td>
+                  <td>Local planar $R^2$</td>
+                </tr>
+                <tr>
+                  <td>Image encoder</td>
+                  <td>StreetCLIP CLS</td>
+                </tr>
+                <tr>
+                  <td>LayerNorm</td>
+                  <td>Enabled</td>
+                </tr>
+                <tr>
+                  <td>CFG rate</td>
+                  <td>0.0</td>
+                </tr>
+                <tr>
+                  <td>Particles</td>
+                  <td>64</td>
+                </tr>
+                <tr>
+                  <td>Euler steps</td>
+                  <td>32</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
