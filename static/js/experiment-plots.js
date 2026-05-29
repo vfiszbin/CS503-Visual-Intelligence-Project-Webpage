@@ -676,6 +676,70 @@
           color: '#f59e0b'
         }
       ]
+    },
+    {
+      containerId: 'final-results-dashboard',
+      title: 'Final results',
+      eyebrow: 'Test split summary',
+      description: 'Comparison between deterministic, spherical flow matching, local flow matching, and the final tuned model.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Mode median distance',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/final_results/summary_metrics.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'cantonAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 2,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/final_results/summary_metrics.csv',
+          wandbMetric: 'test/mode/admin_accuracy/canton'
+        },
+        {
+          key: 'entropy',
+          label: 'Mean entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          missingLabel: '-',
+          csv: './static/data/final_results/summary_metrics.csv',
+          wandbMetric: 'test/uncertainty/mean_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'regression_baseline',
+          label: 'Regression baseline',
+          color: '#64748b'
+        },
+        {
+          key: 's2_rfm_baseline',
+          label: 'S2 RFM baseline',
+          color: '#2563eb'
+        },
+        {
+          key: 'r2_fm_baseline',
+          label: 'R2 FM baseline',
+          color: '#f59e0b'
+        },
+        {
+          key: 'r2_tuned',
+          label: 'R2 tuned',
+          color: '#16a34a'
+        },
+        {
+          key: 'r2_tuned_classifier_prior',
+          label: 'R2 tuned + classifier prior',
+          color: '#dc2626'
+        }
+      ]
     }
   ];
 
@@ -809,7 +873,7 @@
 
   function formatDashboardValue(value, metric) {
     if (value === null || value === undefined) {
-      return 'n/a';
+      return metric.missingLabel || 'n/a';
     }
 
     var scaledValue = value * (metric.multiplier || 1);
@@ -1205,26 +1269,32 @@
     var valueLabel = document.createElement('span');
     var position = metricPosition(value, extent);
     var isBest = isBestMetricValue(value, runs, metric);
+    var isMissing = value === null || value === undefined;
 
     cell.className = 'metric-dashboard-cell';
     track.className = 'metric-dashboard-track';
     axis.className = 'metric-dashboard-axis';
     dot.className = 'metric-dashboard-dot' + (isBest ? ' is-best' : '');
     valueLabel.className = 'metric-dashboard-value';
+    if (isMissing) {
+      valueLabel.className += ' is-missing';
+    }
     if (position < 8) {
       valueLabel.className += ' is-left-edge';
     } else if (position > 92) {
       valueLabel.className += ' is-right-edge';
     }
 
-    dot.style.left = position + '%';
-    dot.style.backgroundColor = run.color;
     valueLabel.style.left = position + '%';
     valueLabel.textContent = formatDashboardValue(value, metric);
     dot.title = run.label + ': ' + metric.label + ' ' + formatDashboardValue(value, metric);
 
     track.appendChild(axis);
-    track.appendChild(dot);
+    if (!isMissing) {
+      dot.style.left = position + '%';
+      dot.style.backgroundColor = run.color;
+      track.appendChild(dot);
+    }
     track.appendChild(valueLabel);
     cell.appendChild(track);
 

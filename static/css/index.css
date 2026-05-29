@@ -565,6 +565,11 @@ body {
   transform: translateX(-100%);
 }
 
+.metric-dashboard-value.is-missing {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
 .single-metric-body {
   padding: 0.9rem 1rem 1rem;
 }

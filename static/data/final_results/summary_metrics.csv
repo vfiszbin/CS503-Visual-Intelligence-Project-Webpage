@@ -1,0 +1,6 @@
+Name,test/mode/median_km,test/mode/admin_accuracy/canton,test/uncertainty/mean_heatmap_entropy
+regression_baseline,15.5,0.5273,
+s2_rfm_baseline,71.9,0.1064,1.34
+r2_fm_baseline,44.1,0.2203,0.43
+r2_tuned,14.5,0.5489,0.13
+r2_tuned_classifier_prior,13.3,0.5896,0.13
