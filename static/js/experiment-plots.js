@@ -527,6 +527,69 @@
       ]
     },
     {
+      containerId: 'number-steps-dashboard',
+      title: 'Number of flow steps',
+      eyebrow: 'Test split summary',
+      description: 'Effect of the number of Euler integration steps used during inference.',
+      metrics: [
+        {
+          key: 'medianDistance',
+          label: 'Median error',
+          unit: 'km',
+          digits: 1,
+          direction: 'lower',
+          csv: './static/data/number_steps/test_mode_median_km.csv',
+          wandbMetric: 'test/mode/median_km'
+        },
+        {
+          key: 'cantonAccuracy',
+          label: 'Canton accuracy',
+          unit: '%',
+          digits: 1,
+          multiplier: 100,
+          direction: 'higher',
+          csv: './static/data/number_steps/test_region_accuracy.csv',
+          wandbMetric: 'test/mode/admin_accuracy/region'
+        },
+        {
+          key: 'entropy',
+          label: 'Mean entropy',
+          unit: '',
+          digits: 2,
+          direction: 'lower',
+          csv: './static/data/number_steps/test_mean_heatmap_entropy.csv',
+          wandbMetric: 'test/uncertainty/mean_heatmap_entropy'
+        }
+      ],
+      runs: [
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_steps8_seed42',
+          label: '8 steps',
+          color: '#bfdbfe'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_steps16_seed42',
+          label: '16 steps',
+          color: '#60a5fa'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_steps32_seed42',
+          label: '32 steps',
+          color: '#2563eb'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_steps64_seed42',
+          label: '64 steps',
+          color: '#1d4ed8'
+        },
+        {
+          key: 'plonk_local_fm_r2_layernorm_cfg0_steps128_seed42',
+          label: '128 steps',
+          color: '#1e3a8a'
+        }
+      ]
+    },
+    {
       containerId: 'combining-improvements-dashboard',
       title: 'Combining improvements',
       eyebrow: 'Test split summary',

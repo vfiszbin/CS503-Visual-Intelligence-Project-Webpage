@@ -342,6 +342,19 @@
           </p>
         </div>
 
+        <h3 class="title is-4">Number of Flow Steps</h3>
+        <div class="content has-text-justified">
+          <p>
+            We evaluated the impact of the number of Euler integration steps at inference, ranging from 8 to 128 steps. Performance improves slightly between 8 and 16 steps, but quickly saturates afterwards.
+            Higher step counts provide little improvement in localization accuracy. Interestingly, increasing the number of steps tends to produce more spread-out prediction distributions, resulting in higher uncertainty.
+            We therefore found that 32 steps are already sufficient for this task.
+          </p>
+        </div>
+
+        <div id="number-steps-dashboard" class="metric-dashboard-host" aria-live="polite">
+          <div class="experiment-status">Loading flow step results...</div>
+        </div>
+
         <h3 class="title is-4">Combining Improvements</h3>
         <div class="content has-text-justified">
           <p>
