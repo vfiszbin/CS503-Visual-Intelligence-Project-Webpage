@@ -74,6 +74,9 @@ Then open `http://localhost:8000`.
 │   │   ├── caption_conditioning/
 │   │   ├── cfg_rate/
 │   │   ├── classifier_probability_conditioning/
+│   │   ├── combining_improvements/
+│   │   ├── final_results/
+│   │   ├── number_steps/
 │   │   ├── rfm_vs_euclidian_fm/
 │   │   └── sampling_shape_size/
 │   │       ├── R2/
