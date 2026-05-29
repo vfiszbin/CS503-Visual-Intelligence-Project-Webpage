@@ -1,31 +1,38 @@
-<!--TODO: ABSTRACT OF THE PROJECT -->
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
+    <!-- Abstract — text left, Flourish visual right -->
+    <div class="columns is-centered is-vcentered">
+      <div class="column is-half">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            <!-- TODO: Replace this abstract with your own project summary (3-5 sentences). -->
-            [Problem] Imagine you are given a photo with no GPS, no text, and no location record, 
-            but you still want to know where it was taken. Image geolocalization tackles this problem 
-            by predicting location from visual clues, which is important for applications like 
+            [Problem] Imagine you are given a photo with no GPS, no text, and no location record,
+            but you still want to know where it was taken. Image geolocalization tackles this problem
+            by predicting location from visual clues, which is important for applications like
             navigation and for testing whether a model truly understands scenes and spatial cues.
           </p>
           <p>
-            [Approach] To address this problem, we explore a generative approach that uses a 
+            [Approach] To address this problem, we explore a generative approach that uses a
             Flow Matching model to construct a probability distribution over possible locations.
           </p>
           <p>
-            [Results] Our experimental results show that pure image features are more effective than 
-            fused image-text features. In addition, for relatively small geographic regions, 
-            representing the flow-matching trajectory space in rectangular coordinates is more 
-            appropriate than using spherical coordinates. We also find that using the output of 
-            a classification model as a condition for the Flow Matching model further improves 
-            performance. Those findings show that the Flow Matching model has great potential for 
+            [Results] Our experimental results show that pure image features are more effective than
+            fused image-text features. In addition, for relatively small geographic regions,
+            representing the flow-matching trajectory space in rectangular coordinates is more
+            appropriate than using spherical coordinates. We also find that using the output of
+            a classification model as a condition for the Flow Matching model further improves
+            performance. Those findings show that the Flow Matching model has great potential for
             addressing the geolocalization problem.
           </p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="abstract-flourish-wrap">
+          <iframe src="https://flo.uri.sh/story/3692691/embed"
+                  frameborder="0" scrolling="no"
+                  style="position:absolute;top:0;left:0;width:100%;height:100%;"
+                  title="Geolocalization visualization"
+                  allowfullscreen></iframe>
         </div>
       </div>
     </div>
